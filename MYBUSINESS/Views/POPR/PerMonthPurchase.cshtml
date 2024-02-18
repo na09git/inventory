@@ -1,0 +1,133 @@
+﻿@model IEnumerable<MYBUSINESS.Models.PO>
+<center><h2>Per Month Purchase</h2></center>
+<center><h4> @ViewBag.ProductName</h4></center>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayName("Month")
+        </th>
+        <th style="display:none;">
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+
+        <th>
+            @*@Html.DisplayName("Order No.")*@
+            Order No.
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Supplier.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PODs.First().Quantity)
+        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.SODs.First().PurchasePrice)
+            </th>*@
+        @*<th>
+                @Html.DisplayNameFor(model => model.SODs.First().SalePrice)
+            </th>*@
+        @*<th>
+                @Html.DisplayName("Profit")
+            </th>*@
+
+    </tr>
+    @{
+        string month = string.Empty;
+        //decimal totProfit = 0;
+        //decimal monthlyProfit = 0;
+        //decimal profit = 0;
+        int totQty = 0;
+        int monthlyQty = 0;
+        decimal salePrice = 0;
+        foreach (var item in Model)
+        {
+            if (month == string.Empty)
+            {
+                month = item.Date.Value.Month.ToString();
+            }
+            else
+            {
+                if (month != item.Date.Value.Month.ToString())
+                {
+                    month = item.Date.Value.Month.ToString();
+                    <tr style="font-weight:bold">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>@(monthlyQty)</td>
+                        @*<td>@(monthlyProfit)</td>*@
+                    </tr>
+                    //monthlyProfit = 0;
+                    monthlyQty = 0;
+                }
+            }
+
+
+            foreach (var subItem in item.PODs)
+            {
+
+                <tr>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td style="display:none;">
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.POSerial)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Supplier.Name)
+                    </td>
+
+                    <td>
+                        @*@Html.DisplayFor(modelSubItem => subItem.Quantity)*@
+                        @{
+
+                            monthlyQty += (int)subItem.Quantity;
+                            totQty += (int)subItem.Quantity;
+                        }
+                        @(subItem.Quantity)
+                    </td>
+                    @*<td>
+                            @(subItem.PurchasePrice * subItem.Quantity)
+                        </td>*@
+                    @*<td>
+                            @(subItem.SalePrice * subItem.Quantity)
+                        </td>*@
+
+                    @*<td>
+                            @{
+                                profit = (decimal)(subItem.PurchasePrice * subItem.Quantity) - (decimal)(subItem.PurchasePrice * subItem.Quantity);
+                                monthlyProfit += profit;
+                                totProfit += profit;
+
+                            }
+                            @(profit)
+                        </td>*@
+                </tr>
+            }
+
+        }
+        <tr style="font-weight:bold">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>@(monthlyQty)</td>
+            @*<td>@(monthlyProfit)</td>*@
+        </tr>
+        <tr style="font-weight:bold">
+            <td></td>
+            <td></td>
+            <td>Total</td>
+            <td>@(totQty)</td>
+            @*<td>@(totProfit)</td>*@
+        </tr>
+    }
+</table>

@@ -1,0 +1,224 @@
+﻿@*@model IEnumerable<MYBUSINESS.Models.SO>*@
+@model MYBUSINESS.Models.DashboardViewModel
+
+
+@{
+    var carton = 0; //= (d.Stock / d.PerPack);
+    var piece = 0;
+
+    <div id="NewData">
+        <div class="noScreen">
+            <center><h4>@ViewBag.StartDate - @ViewBag.EndDate</h4></center>
+        </div>
+        <hr />
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <center><h3 class="box-title">Products</h3></center>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-bordered table-hover" id="PWS">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Product</th>
+                                        <th>Opening stock</th>
+                                        <th>Purchased stock</th>
+                                        <th>Total</th>
+                                        <th>Sold stock</th>
+                                        <th>Balance</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+
+                                        int OpeningStock = 0;
+                                        int ClosingStock = 0;
+                                        int PurchasedStock = 0;
+                                        int TotalStock = 0;
+                                        int SoldStock = 0;
+                                        int Balnace = 0;
+
+                                        foreach (var product in Model.Products)
+                                        {
+
+                                            if (product.SODs.Count > 0)
+                                            {
+                                                OpeningStock = (int)(product.SODs.First().OpeningStock);
+                                                ClosingStock = (int)(product.SODs.Last().OpeningStock);
+
+                                            }
+                                            if (product.PODs.Count > 0)
+                                            {
+                                                OpeningStock = (int)(product.PODs.First().OpeningStock);
+                                                ClosingStock = (int)(product.PODs.Last().OpeningStock);
+
+                                            }
+
+
+                                            PurchasedStock = 0;
+                                            foreach (var pod in product.PODs)
+                                            {
+                                                if (pod.SaleType == false)//purchase order
+                                                {
+                                                    if (pod.IsPack == true)
+                                                    { PurchasedStock += (int)(pod.Quantity * pod.PerPack); }
+                                                    else
+                                                    { PurchasedStock += (int)(pod.Quantity); }
+
+                                                }
+                                                else
+                                                {
+                                                    if (pod.IsPack == true)
+                                                    { PurchasedStock -= (int)(pod.Quantity * pod.PerPack); }
+                                                    else
+                                                    { PurchasedStock -= (int)(pod.Quantity); }
+                                                }
+                                            }
+                                            SoldStock = 0;
+                                            foreach (var sod in product.SODs)
+                                            {
+                                                if (sod.SaleType == false)//sale order
+                                                {
+
+                                                    if (sod.IsPack == true)
+                                                    { SoldStock += (int)(sod.Quantity * sod.PerPack); }
+                                                    else
+                                                    { SoldStock += (int)(sod.Quantity); }
+
+
+                                                }
+                                                else
+                                                {
+
+                                                    if (sod.IsPack == true)
+                                                    { SoldStock -= (int)(sod.Quantity * sod.PerPack); }
+                                                    else
+                                                    { SoldStock -= (int)(sod.Quantity); }
+
+                                                }
+                                            }
+
+                                            <tr>
+                                                <td>
+                                                    @product.Id
+                                                </td>
+                                                <td>
+                                                    @product.Name
+                                                </td>
+                                                <td>
+
+                                                    @*@(OpeningStock / product.PerPack), @(OpeningStock % product.PerPack)*@
+
+                                                    @{
+                                                        carton = (int)(OpeningStock / product.PerPack);
+                                                        piece = (int)(OpeningStock % product.PerPack);
+                                                        if (piece == 0){@(carton)}else{@(carton.ToString() + ", " + piece.ToString())}
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @*@(PurchasedStock / product.PerPack), @(PurchasedStock % product.PerPack)*@
+                                                    @{
+                                                        carton = (int)(PurchasedStock / product.PerPack);
+                                                        piece = (int)(PurchasedStock % product.PerPack);
+                                                        if (piece == 0){@(carton)}else{@(carton.ToString() + ", " + piece.ToString())}
+                                                    }
+                                                </td>
+
+                                                <td>
+                                                    @* return waly *@
+                                                    @{TotalStock = OpeningStock + PurchasedStock;}
+                                                    @*@(TotalStock / product.PerPack), @(TotalStock % product.PerPack)*@
+                                                    @{
+                                                        carton = (int)(TotalStock / product.PerPack);
+                                                        piece = (int)(TotalStock % product.PerPack);
+                                                        if (piece == 0){@(carton)}else{@(carton.ToString() + ", " + piece.ToString())}
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @*@(SoldStock / product.PerPack), @(SoldStock % product.PerPack)*@
+                                                    @{
+                                                        carton = (int)(SoldStock / product.PerPack);
+                                                        piece = (int)(SoldStock % product.PerPack);
+                                                        if (piece == 0){@(carton)}else{@(carton.ToString() + ", " + piece.ToString())}
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @{Balnace = TotalStock - SoldStock;}
+                                                    @*@(Balnace / product.PerPack), @(Balnace % product.PerPack)*@
+                                                    @{
+                                                        carton = (int)(Balnace / product.PerPack);
+                                                        piece = (int)(Balnace % product.PerPack);
+                                                        if (piece == 0){@(carton)}else{@(carton.ToString() + ", " + piece.ToString())}
+                                                    }
+
+                                                </td>
+
+                                            </tr>
+                                            //}
+
+                                        }
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    @*<tr style="font-weight:bold">
+                                            <td>Total</td>
+                                            <td>@totSOQty</td>
+                                            <td>@totSOAmnt.ToString("0.00")</td>
+                                            <td>@totSRQty</td>
+                                            <td>@totSRAmnt.ToString("0.00")</td>
+                                            <td>@totProfit.ToString("0.00")</td>
+                                        </tr>*@
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    @* other table *@
+
+
+                </div>
+            </div>
+            *E.g. 10, 2 = 10 packs, 2 pieces
+        </section>
+
+
+
+
+        @* ////////////////////////////////////////////////////////////////////////////////////////////////// *@
+
+    </div>
+
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+
+        $('#PWS').DataTable({
+            //fixedHeader: {
+            //    header: true,
+            //    footer: true
+            //},
+            //"sScrollX": "100%",
+            //"scrollX": true,
+            "scrollY": "400px",
+            "scrollCollapse": true,
+            "paging": false,
+            "bInfo": false,
+            "order": [[0, "asc"]],
+            "searching": false
+        });
+
+
+
+
+    });
+
+
+</script>

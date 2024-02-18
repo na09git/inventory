@@ -1,0 +1,150 @@
+﻿@model IEnumerable<MYBUSINESS.Models.Supplier>
+@{
+    ViewBag.Title = "Suppliers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@*<link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>*@
+<link href="~/Content/custom/downloads/datatables.min.css" rel="stylesheet" />
+<script src="~/Content/custom/downloads/datatables.min.js"></script>
+<center><h2>Suppliers</h2></center>
+
+@*<p>
+        @Html.ActionLink("Create New Supplier", "Create")
+    </p>*@
+
+<div class="col-sm-12">
+    @*<button type="submit" id="CreateSO" class="btn btn-info add-new"><i class="fa fa-plus"></i>Save & Print</button>*@
+    <a href="/Suppliers/Create" id="createSupplier" class="btn btn-info "><i class=""></i> New Supplier</a> |
+    <a href="/POPR/Create?IsReturn=false" id="createPOPR" class=""><i class=""></i> New Purchase</a>
+</div>
+<hr />
+@{
+
+    decimal TotalRA = 0;//Receivables (RA)
+    decimal TotalPA = 0;//Payables (PA)
+    decimal RAcount = 0;
+    decimal PAcount = 0;
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    @*<div class="box-header">
+                            <h3 class="box-title">Hover Data Table</h3>
+                        </div>*@
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-hover cell-border" id="SupplierIndex">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Id)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Name)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Address)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Balance)
+                                    </th>
+
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Id)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Address)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Balance)
+                                            @{
+                                                if (item.Balance > 0)
+                                                {
+                                                    TotalPA += (decimal)item.Balance;
+                                                    PAcount += 1;
+                                                }
+                                                if (item.Balance < 0)
+                                                {
+                                                    TotalRA += (decimal)item.Balance;
+                                                    RAcount += 1;
+
+                                                }
+
+                                            }
+                                        </td>
+
+
+                                        <td>
+                                            @Html.ActionLink("Update", "Edit", new { id = item.Id }) @*|
+                                            @Html.ActionLink("Ledger", "Index", "SupplierLedger", new { suppId = item.Id }, new { data_toggle = "tooltip", data_placement = "top", title = "Click to view transection history of this customer" })*@@*|
+        @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+        @Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr style="font-weight:bold">
+                                    <td></td>
+                                    <td></td>
+                                    <td>@RAcount receivables</td>
+                                    <td>@TotalRA</td>
+                                    <td></td>
+                                </tr>
+                                <tr style="font-weight:bold">
+                                    <td></td>
+                                    <td></td>
+                                    <td>@PAcount payables</td>
+                                    <td>@TotalPA</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        //$('#SOSRIndex').DataTable({
+        //    fixedHeader: {
+        //        footer: true
+        //    }
+        //});
+        $('#SupplierIndex').DataTable({
+            //fixedHeader: {
+            //    header: true,
+            //    footer: true
+            //},
+            "scrollY": "400px",
+            "scrollCollapse": true,
+            "paging": false,
+            "bInfo": false,
+            "order": [[0, "asc"]],
+            "searching": false
+
+        });
+
+
+    });
+
+</script>

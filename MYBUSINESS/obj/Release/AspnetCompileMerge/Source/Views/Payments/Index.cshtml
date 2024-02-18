@@ -1,0 +1,56 @@
+﻿@model IEnumerable<MYBUSINESS.Models.Payment>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<center><h2>@ViewBag.Customer Payment History</h2></center>
+<center><h4>Order No. @ViewBag.OrderNo</h4></center>
+
+<p>
+    @Html.ActionLink("Add New Payment", "Create",new {custName = @ViewBag.Customer, orderNo= @ViewBag.OrderNo,id=ViewBag.id })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ReceivedDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaymentMethod)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaymentAmount)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.SO.Remarks)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReceivedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentMethod)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentAmount)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Remarks)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) @*|
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
+            </td>
+        </tr>
+    }
+
+</table>

@@ -1,0 +1,75 @@
+﻿@model MYBUSINESS.Models.Employee
+
+
+@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    //ViewBag.Title = "Log in";
+
+
+}
+
+@*<h2>@ViewBag.Title.</h2>*@
+<div class="row">
+
+    <div class="col-md-8">
+        <section id="loginForm">
+            @using (Html.BeginForm("Login", "UserManagement", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <h4>@*Use LeaveON account to login.*@</h4>
+                <hr />
+                @Html.ValidationSummary(true)
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Login, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Login, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Login)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Password)
+                        <div style="color:red">@TempData["message"]</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div class="checkbox">
+                            @*@Html.CheckBoxFor(m => m.RememberMe)*@
+                            @*@Html.LabelFor(m => m.RememberMe)*@
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Login" class="btn btn-group-justified btn-info btn-lg" />
+
+                    </div>
+                </div>
+                <p>
+                    @*@Html.ActionLink("Register", "Register") if you don't have a local account.*@
+                </p>
+            }
+        </section>
+    </div>
+    <div class="col-md-4">
+        @*<img alt="Home" src="~/Content/images/NU.jpg" title="Home" />*@
+
+        <section id="socialLoginForm">
+            @*     @Html.Partial("_ExternalLoginsListPartial", new { Action = "ExternalLogin", ReturnUrl = ViewBag.ReturnUrl })*@
+        </section>
+    </div>
+</div>
+<script>
+    document.getElementById('Login').focus();
+</script>
+
+@*@section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }*@

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="a584e9a2f9434e69aac2e1c9ca294c92" Name="Diagram1" ZoomLevel="67">
+        <EntityTypeShape EntityType="Models.Customer" Width="1.5" PointX="0.75" PointY="2.75" />
+        <EntityTypeShape EntityType="Models.Employee" Width="1.5" PointX="0.75" PointY="6.5" />
+        <EntityTypeShape EntityType="Models.PO" Width="1.5" PointX="6" PointY="6.5" />
+        <EntityTypeShape EntityType="Models.POD" Width="1.5" PointX="8.25" PointY="7.375" />
+        <EntityTypeShape EntityType="Models.Product" Width="1.5" PointX="6" PointY="0.75" />
+        <EntityTypeShape EntityType="Models.SO" Width="1.5" PointX="3" PointY="6.375" />
+        <EntityTypeShape EntityType="Models.SOD" Width="1.5" PointX="8.25" PointY="2.25" />
+        <EntityTypeShape EntityType="Models.Supplier" Width="1.5" PointX="3.75" PointY="2.75" />
+        <AssociationConnector Association="Models.FK_SO_Customer" />
+        <AssociationConnector Association="Models.FK_PO_Employee" />
+        <AssociationConnector Association="Models.FK_SO_Employee" />
+        <AssociationConnector Association="Models.FK_PO_Supplier" />
+        <AssociationConnector Association="Models.FK_POD_PO" />
+        <AssociationConnector Association="Models.FK_POD_Product" />
+        <AssociationConnector Association="Models.FK_Product_Supplier" />
+        <AssociationConnector Association="Models.FK_SOD_Product" />
+        <AssociationConnector Association="Models.FK_SOD_SO" />
+        <EntityTypeShape EntityType="Models.Payment" Width="1.5" PointX="5.25" PointY="13.125" />
+        <AssociationConnector Association="Models.FK_Payment_SO" />
+        <EntityTypeShape EntityType="Models.Department" Width="1.5" PointX="0.75" PointY="13" />
+        <EntityTypeShape EntityType="Models.Location" Width="1.5" PointX="10.375" PointY="1" />
+        <AssociationConnector Association="Models.FK_Employee_Department" />
+        <AssociationConnector Association="Models.FK_Product_Location" />
+        <EntityTypeShape EntityType="Models.MyBusinessInfo" Width="1.5" PointX="10.375" PointY="4.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

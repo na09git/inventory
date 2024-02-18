@@ -1,0 +1,211 @@
+﻿@model IEnumerable<MYBUSINESS.Models.Product>
+@{
+    /**/
+
+    double TotalSalePrice = 0;
+    double TotalPurchasePrice = 0;
+
+    int TotalStock = 0;
+    int carton = 0;
+    int piece = 0;
+    <div id="NewData">
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        @*<div class="box-header">
+                                <h3 class="box-title">Hover Data Table</h3>
+                            </div>*@
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <table class="table table-hover cell-border" id="ProductIndex">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Id)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("Supplier")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Name)
+                                        </th>
+
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.PurchasePrice)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.SalePrice)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Stock)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.PerPack)
+                                        </th>
+
+
+
+                                        <th>
+                                            Total Purchase Price
+                                        </th>
+                                        <th>
+                                            Total Sale Price
+                                        </th>
+
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Saleable)
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="ProductIdForSearch">
+                                                @Html.DisplayFor(modelItem => item.Id)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Supplier.Name)
+                                            </td>
+
+                                            <td class="ProductNameForSearch">
+                                                @*@Html.DisplayFor(modelItem => item.Name)*@
+                                                @*<a href="#" data-toggle="tooltip" data-placement="top" title="Search this product in sales"> @Html.DisplayFor(modelItem => item.Name)</a>*@
+
+                                                @*@Html.ActionLink(item.Name, "Index","SOSR", new { id = item.Id },new {data-toggle="tooltip", data-placement="top", title="Search this product in sales" })*@
+
+                                                @*<a href="@Url.Action("PrintSO3","SOSR", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="View invoice"></a>*@
+
+
+                                                <ul class="nav navbar-nav">
+                                                    <li class="dropdown">
+                                                        @*<a href="/Products/Index">@item.Name <b class="caret"></b></a>*@
+                                                        @item.Name <b class="caret"></b>
+                                                        <ul id="products-menu" class="dropdown-menu clearfix" role="menu">
+                                                            <li><a href="@Url.Action("SearchProduct", "SOSR", new { productId = item.Id })" data-toggle="tooltip" data-placement="top" title="Search this product in Sales">Search in Sales History</a></li>
+                                                            <li><a href="@Url.Action("SearchProduct", "POPR", new { productId = item.Id })" data-toggle="tooltip" data-placement="top" title="Search this product in Purchasess">Search in Purchases History</a></li>
+                                                            @*<li><a href="@Url.Action("PerMonthSale","SOSR", new { productId = item.Id })" data-toggle="tooltip" data-placement="top" title="Search this product in Per Month Sales">Per Month Sales</a></li>
+                                                                <li><a href="@Url.Action("PerMonthPurchase","POPR", new { productId = item.Id })" data-toggle="tooltip" data-placement="top" title="Search this product in Per Month Purchasess">Per Month Purchases</a></li>*@
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+
+                                            </td>
+
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PurchasePrice)
+
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.SalePrice)
+
+                                            </td>
+                                            <td>
+                                                @*@Html.DisplayFor(modelItem => item.Stock.Value.ToString("0"))*@
+
+                                                @{
+                                                    carton = (int)(item.Stock / item.PerPack);
+                                                    piece = (int)(item.Stock % item.PerPack);
+                                                    if (piece == 0)
+                                                    {
+                                                        @(carton)
+                                                    }
+                                                    else
+                                                    {
+                                                        @(carton + "," + piece)
+                                                    }
+                                                    TotalStock += (int)(item.Stock / item.PerPack);
+                                                }
+
+                                                @*@(((int)(item.Stock / item.PerPack)).ToString() + ", " + ((int)(item.Stock % item.PerPack)).ToString())*@
+                                                
+
+
+
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PerPack)
+
+                                            </td>
+                                            <td>
+                                                @((item.PurchasePrice * item.Stock).Value.ToString("0.00"))
+                                                @{TotalPurchasePrice += (double)(item.PurchasePrice * item.Stock);}
+                                            </td>
+
+                                            <td>
+                                                    @((item.SalePrice * item.Stock ).Value.ToString("0.00"))
+                                                    @{TotalSalePrice += (double)(item.SalePrice * item.Stock);}
+                                            </td>
+
+
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Saleable)
+                                            </td>
+                                            <td>
+                                                @Html.ActionLink("Update", "Edit", new { id = item.Id }) @*|
+                                                <a href="@Url.Action("ProductWiseSale","SOSR", new { productId = item.Id })" data-toggle="tooltip" data-placement="top" title="Search this product">Product Wise Sale</a>*@
+
+                                                @*|
+                                                    @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                                                    @Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr style="font-weight:bold">
+                                        @*<td>Total</td>*@
+                                        <td>@Model.Count()</td>
+                                        <td></td>
+                                        <td></td>
+
+                                        <td></td>
+                                        <td></td>
+                                        <td>@TotalStock</td>
+
+                                        <td></td>
+
+
+                                        <td>@TotalPurchasePrice</td>
+                                        <td>@TotalSalePrice</td>
+
+                                        <td>Projected Profit</td>
+                                        <td>= @(TotalSalePrice - TotalPurchasePrice)</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        //$('#SOSRIndex').DataTable({
+        //    fixedHeader: {
+        //        footer: true
+        //    }
+        //});
+        $('#ProductIndex').DataTable({
+            //fixedHeader: {
+            //    header: true,
+            //    footer: true
+            //},
+            "scrollY": "400px",
+            "scrollCollapse": true,
+            "paging": false,
+            "bInfo": false,
+            "order": [[0, "desc"]],
+            "searching": false
+
+        });
+
+
+    });
+
+</script>

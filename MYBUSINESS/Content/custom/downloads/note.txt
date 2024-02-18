@@ -1,0 +1,9 @@
+jquery-ui.css
+jquery-ui.min.css
+
+copy above file from downloads floder to jquery-ui-1.12.1.custom
+resolve the row selection issue
+
+already files were renamed
+jquery-ui-.css
+jquery-ui.min-.css

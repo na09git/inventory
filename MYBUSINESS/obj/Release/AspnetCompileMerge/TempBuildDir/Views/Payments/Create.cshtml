@@ -1,0 +1,129 @@
+﻿@model MYBUSINESS.Models.Payment
+
+<center><h2>@ViewBag.custName Payment History</h2></center>
+<center><h4>Order No. @ViewBag.orderNo</h4></center>
+<center><h4>Payable Amount: @ViewBag.PayableAmount | Paid Amount: @ViewBag.Paid | Balance Amount: @ViewBag.Balance</h4></center>
+
+@using (Html.BeginForm())
+{
+    decimal TotalPayment = 0;
+    @Html.AntiForgeryToken()
+
+<table class="table">
+    <tr>
+        @*<th></th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.ReceivedDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaymentMethod)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaymentAmount)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.SO.Remarks)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in ViewBag.Payments)
+    {
+        <tr>
+            @*<td>
+                @item.Id
+            </td>*@
+            <td>
+                @item.ReceivedDate
+            </td>
+            <td>
+                @item.PaymentMethod
+
+            </td>
+            <td>
+                @item.PaymentAmount
+                @{TotalPayment += item.PaymentAmount;}
+            </td>
+
+            <td>
+                @item.Remarks
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) @*|
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
+            </td>
+        </tr>
+
+    }
+
+    <tr>
+        @*<td></td>*@
+        <td>
+            @Html.EditorFor(model => model.ReceivedDate, new { htmlAttributes = new { @class = "form-control datepicker", @autocomplete = "off", @id = "datepickerPayementReceived", @placeholder = "Enter received date", @Value = ViewBag.TodayDate } })
+            @Html.ValidationMessageFor(model => model.ReceivedDate, "", new { @class = "text-danger" })
+        </td>
+        <td>
+            @*@Html.EditorFor(model => model.PaymentMethod, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @placeholder = "select payment method", @title = "Select payment method" } })*@
+            <select class="form-control" name="PaymentMethod" id="PaymentMethod">
+                <option value="Cash" selected>Cash</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Other">Other</option>
+            </select>
+            @Html.ValidationMessageFor(model => model.PaymentMethod, "", new { @class = "text-danger" })
+        </td>
+        <td>
+            @Html.EditorFor(model => model.PaymentAmount, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter new amount", @title = "Enter new amount" } })
+            @Html.ValidationMessageFor(model => model.PaymentAmount, "", new { @class = "text-danger" })
+        </td>
+        <td>
+            @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control", @rows = 1, @autocomplete = "off", @placeholder = "Remarks", @title = "Remarks" })
+            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+        </td>
+        <td>
+            <input type="submit" value="Add Payment" class="btn btn-info add-new" />
+        </td>
+    </tr>
+    @*<tr>
+            <td></td>
+            <td><b>Total</b></td>
+            <td><b>@TotalPayment</b></td>
+            <td></td>
+            <td></td>
+
+        </tr>*@
+
+
+</table>
+
+
+    <input type="hidden" name="Id" id="Id" value="0" />
+    <input type="hidden" name="SOId" id="SOId" value="@ViewBag.id" />
+
+
+
+
+}
+
+@*<div>
+    @Html.ActionLink("Back to Lager", "Index","CustomerLedger")
+</div>*@
+
+
+<script type="text/javascript">
+
+    $(function () { // will trigger when the document is ready
+        //var date = $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' }).val();
+        $('.datepicker').datepicker({
+            dateFormat: 'dd-M-yy'//,
+            // showOn: "both"//,
+            //buttonImageOnly: true,
+            //buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+
+            //buttonText: "Select date"
+        });
+
+    });
+
+</script>

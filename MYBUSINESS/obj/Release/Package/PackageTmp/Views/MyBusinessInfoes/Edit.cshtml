@@ -1,0 +1,86 @@
+﻿@model MYBUSINESS.Models.MyBusinessInfo
+
+@{
+    ViewBag.Title = "Business Info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@*Create New Customer*@</h2>
+<div class="content-wrapper">
+    <section class="content">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-6">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">My Business Info</h3>
+                    </div>
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        <form role="form">
+                            <div class="box-body">
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.BizName, htmlAttributes: new { @class = "control-label" })
+
+                                    @Html.EditorFor(model => model.BizName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.BizName, "", new { @class = "text-danger" })
+
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Tagline, htmlAttributes: new { @class = "control-label" })
+
+                                    @Html.EditorFor(model => model.Tagline, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Tagline, "", new { @class = "text-danger" })
+
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.BizAddress, htmlAttributes: new { @class = "control-label" })
+
+                                    @Html.EditorFor(model => model.BizAddress, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.BizAddress, "", new { @class = "text-danger" })
+
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Mobile, htmlAttributes: new { @class = "control-label" })
+
+                                    @Html.EditorFor(model => model.Mobile, new { htmlAttributes = new { @class = "form-control" } })
+                                    @*@Html.ValidationMessageFor(model => model.Balance, "", new { @class = "text-danger" })*@
+
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+
+                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                    @*@Html.ValidationMessageFor(model => model.Balance, "", new { @class = "text-danger" })*@
+
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Website, htmlAttributes: new { @class = "control-label" })
+
+                                    @Html.EditorFor(model => model.Website, new { htmlAttributes = new { @class = "form-control" } })
+                                    @*@Html.ValidationMessageFor(model => model.Balance, "", new { @class = "text-danger" })*@
+
+                                </div>
+
+                            </div>
+                            <div class="box-footer">
+                                <input type="submit" value="Update" class="btn btn-primary" />
+                                @*@Html.ActionLink("Back to List", "Index")*@
+                            </div>
+
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

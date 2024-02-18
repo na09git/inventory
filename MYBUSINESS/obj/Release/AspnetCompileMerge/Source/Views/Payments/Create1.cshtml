@@ -1,0 +1,97 @@
+﻿@model MYBUSINESS.Models.Payment
+
+<center><h2>@ViewBag.custName</h2></center>
+<center><h4>Order No. @ViewBag.orderNo</h4></center>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>Payment</h4>
+    <hr />
+    @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+
+    @*@Html.Editor("startDate", new { htmlAttributes = new { @class = "form-control datepicker", @id = "datepickerStart", @placeholder = "Start date" } })*@
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ReceivedDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.ReceivedDate, new { htmlAttributes = new { @class = "form-control datepicker", @id = "datepickerPayementReceived", @placeholder = "Enter received date", @Value = ViewBag.TodayDate } })
+            @Html.ValidationMessageFor(model => model.ReceivedDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*<div class="form-group">
+            @Html.LabelFor(model => model.SOId, "SOId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("SOId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.SOId, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+    <input type="hidden" name="Id" id="Id" value="0" />
+    <input type="hidden" name="SOId" id="SOId" value="@ViewBag.id" />
+    @*<input type="hidden" name="SaleOrder.CustomerId" id="idnCustomer" value="" />*@
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.PaymentMethod, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.PaymentMethod, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.PaymentMethod, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.PaymentAmount, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.PaymentAmount, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.PaymentAmount, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    @*<textarea name="SaleOrder.Remarks" rows="1" cols="100" class="form-control" placeholder="Remarks..."></textarea>*@
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control", @rows = 4, @cols = 100 })
+            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Update" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+<script type="text/javascript">
+
+    $(function () { // will trigger when the document is ready
+        //var date = $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' }).val();
+        $('.datepicker').datepicker({
+            dateFormat: 'dd-M-yy',
+            showOn: "both"//,
+            //buttonImageOnly: true,
+            //buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+
+            //buttonText: "Select date"
+        });
+
+    });
+
+</script>

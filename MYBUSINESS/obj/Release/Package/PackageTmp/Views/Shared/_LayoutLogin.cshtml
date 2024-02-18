@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - BiznisHike ShopON </title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @*                @Html.ActionLink("Application name", "Index", "Home", null, new { @class = "navbar-brand" })*@
+
+                @*<a href="#"><img src="@Url.Content("~/Content/images/logo.png")" /></a>*@
+                @*@Html.ActionLink("National University of Computer and Emerging Sciences", "Index", "DashBoard", null, new { @class = "navbar-brand" })*@
+
+
+                @*<a href="@Url.Action("Index", "DashBoard", new { @class = "navbar-brand" })">
+                        <img alt="Home" src="~/Content/images/logo.png" title="Home" />LeaveON NUCES
+
+                    </a>*@
+
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right"></ul>
+
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        @*<div class="row">
+                <div class="col-sm-6">
+
+                </div>
+                <div class="col-sm-6">
+                    <img alt="Home" src="~/Content/images/NU.jpg" title="Home" />
+                </div>
+            </div>*@
+
+
+
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - BiznisHike ShopON </p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

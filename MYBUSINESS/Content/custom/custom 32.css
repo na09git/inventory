@@ -1,0 +1,553 @@
+﻿/*body {
+    overflow-y: hidden;
+}*/
+body {
+    color: #404E67;
+    background: #F5F7FA;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.items-with-barcode {
+    position: absolute;
+    top: 350px;
+    left: 20px;
+    background: white;
+    width: 570px;
+    height: 300px;
+    moz-box-shadow: 3px 3px 5px 6px #ccc;
+    -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+    box-shadow: 3px 3px 5px 5px #ccc;
+}
+
+.name-and-address {
+    position: absolute;
+    top: 200px;
+    left: 20px;
+    width: 570px;
+    height: 100px;
+    background: white;
+    padding-left: 30px;
+    padding-top: 10px;
+    moz-box-shadow: 3px 3px 5px 6px #ccc;
+    -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+    box-shadow: 3px 3px 5px 5px #ccc;
+}
+
+.container .name-and-address .labels {
+    position: relative;
+    top: 5px;
+    left: 20px;
+    width: 50px;
+    text-align: right;
+}
+
+.scanning-area .item-search-with-title {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 280px;
+    height: 50px;
+}
+
+.scanning-area .item-search-with-barcode {
+    position: absolute;
+    top: 3px;
+    left: 285px;
+    width: 270px;
+    height: 50px;
+}
+
+.item-search-with-title input {
+    border-radius: 5px;
+    height: 30px;
+    width: 280px;
+    border-color: lightgray;
+    background: white;
+}
+
+.item-search-with-barcode input {
+    border-radius: 5px;
+    height: 30px;
+    width: 275px;
+    border-color: lightgray;
+    background: white;
+}
+
+.container .name-and-address .fields {
+    position: absolute;
+    top: 5px;
+    cell-padding: 5px;
+    left: 200px;
+}
+
+.container .col-sm-9 .row button {
+    border-radius: 25px;
+}
+
+.container .name-and-address .fields input:nth-child(1) {
+    border-radius: 5px;
+    left: -150px;
+    height: 35px;
+    border-color: lightgrey;
+    background: rgba(0,0,0,.05);
+}
+
+.container .name-and-address .fields a {
+    positoin: relative;
+}
+
+.container .name-and-address .fields .address {
+    postion: absolute;
+    top: 0px;
+    height: 35px;
+    border-radius: 5px;
+    border-color: lightgray;
+    background: rgba(0,0,0,.05);
+}
+
+.tablescroll {
+    height: 300px;
+    overflow: auto;
+}
+
+.items-with-barcode .search-result {
+    position: relative;
+    top: 70px;
+    background-color: rgba(0,0,0,.05);
+    max-width: 750px;
+    height: 38vh;
+    overflow: auto;
+}
+
+.col-sm-offset-5 b {
+    text-shadow: 2px 2px lightgrey;
+}
+
+.items-width-barcode .srolldiv {
+    height: 100%;
+}
+
+.saleOrderTable {
+    position: relative;
+    top: 0px;
+    background-color: rgba(0,0,0,.05);
+    max-width: 750px;
+    height: 50vh;
+    scrollbar-face: none;
+    overflow: auto;
+}
+
+.required-table {
+    position: relative;
+    float: left;
+    transform: translateX(-20%);
+}
+
+.remaining-elements {
+    position: absolute;
+    top: 510px;
+    left: 400px;
+}
+
+    .remaining-elements select {
+        position: relative;
+        left: -15px;
+        width: 205px;
+    }
+
+    .remaining-elements textarea {
+        height: 100px;
+        border-radius: 1px;
+    }
+
+    .remaining-elements .payment-textarea {
+        border-radius: 0px;
+        width: 100%;
+        height: 50px;
+    }
+
+    .remaining-elements .remarks {
+        position: relative;
+        top: -20px;
+        width: 205px;
+        height: 50px;
+    }
+/**/
+/**/
+.salerdernavigation {
+    display: block;
+    position: absolute;
+    top: 80px;
+    left: 180px;
+    transform: translate(-28%);
+    width: 570px;
+    height: 50px;
+    background: #fff;
+    padding-left: 10px;
+    padding-top: 10px;
+    moz-box-shadow: 3px 3px 5px 6px #ccc;
+    -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+    box-shadow: 3px 3px 5px 5px #ccc;
+}
+
+.back-list {
+    position: relative;
+    top: 1100px;
+}
+
+@media (max-width:991px) {
+
+    .salerdernavigation {
+        position: absolute;
+        left: 50%;
+        bottom: 10px;
+        margin-bottom: auto;
+        z-index: 2;
+        width: 300px;
+        height: 120px;
+    }
+
+        .salerdernavigation .row .icon {
+            position: absolute;
+            left: -35%;
+            top: 50px;
+        }
+
+        .salerdernavigation input[name="searchbox"] {
+            border-radius: 20px;
+            border: solid 1px #000;
+            width: 130px;
+        }
+
+        .salerdernavigation .btn .btn-success {
+            position: relative;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9em;
+            background-color: #5bc0de;
+        }
+
+    .container .name-and-address {
+        position: relative;
+        top: 1200px;
+        left: 50px;
+        width: 300px;
+        height: 200px;
+    }
+
+        .container .name-and-address .fields a {
+            position: absolute;
+            left: -200px;
+            top: 70px;
+        }
+
+        .container .name-and-address .labels .customeradd {
+            position: absolute;
+            left: -50px;
+            top: 80px;
+        }
+
+    .items-with-barcode .search-result {
+        display: none;
+    }
+
+    .container .name-and-address .labels .customername {
+        position: relative;
+        left: -50px;
+    }
+
+    .customeradd {
+        position: relative;
+        top: 20px;
+    }
+
+    .fields .Newcustomer {
+        position: absolute;
+        left: -190px;
+        top: 35px;
+    }
+
+    .container .name-and-address .fields .address {
+        position: absolute;
+        left: -150px;
+        top: 120px;
+    }
+
+    .items-with-barcode {
+        position: absolute;
+        top: 1480px;
+        left: 80px;
+        background: white;
+        width: 300px;
+        height: 300px;
+        moz-box-shadow: 3px 3px 5px 6px #ccc;
+        -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+        box-shadow: 3px 3px 5px 5px #ccc;
+    }
+
+    .container .items-with-barcode .scanning-area .item-search-with-barcode {
+        position: absolute;
+        left: 0px;
+        top: 100px;
+    }
+
+    .remaining-elements .payment-textarea {
+        border-radius: 0px;
+        width: 205px;
+        height: 50px;
+    }
+
+    .remaining-elements .remarks {
+        position: relative;
+        top: -20px;
+        width: 205px;
+        height: 50px;
+    }
+}
+
+.salerdernavigation input[name="searchbox"] {
+    position: absolute;
+    top: 15px;
+    border-radius: 20px;
+    border: solid 1px #000;
+    width: 130px;
+}
+
+.salerdernavigation .btn-success {
+    border-radius: 20px;
+    color: white;
+    font-size: 0.9em;
+    background-color: #71CCD9;
+    position: relative;
+    left: 135px;
+    top: 0px;
+}
+
+.salerdernavigation .icon {
+    position: absolute;
+    top: 10px;
+    left: 170px;
+}
+
+.salerdernavigation .row .icon .btn {
+    border-radius: 0;
+    position: relative;
+    height: 30px;
+    width: 60px;
+    border: none;
+}
+
+.dialog-CreateProduct .form-horizontal .table-title .row .col-sm-8 {
+    position: absolute;
+    top: 390px;
+    left: 50px;
+}
+
+.table-wrapper {
+    positoin: sticky;
+    transform: translate(10%,2%);
+    top: 200px;
+    right: 0px;
+    float: right;
+    width: 700px;
+    background: #fff;
+    padding: 20px;
+    moz-box-shadow: 3px 3px 5px 6px #ccc;
+    -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+    box-shadow: 3px 3px 5px 5px #ccc;
+}
+
+.table-title {
+    padding-bottom: 10px;
+    margin: 0 0 0px;
+}
+
+    .table-title h2 {
+        margin: 6px 0 0;
+        font-size: 22px;
+    }
+
+.saveprint {
+    position: absolute;
+    top: 300px;
+    left: 510px;
+}
+
+    .saveprint button {
+        border-radius: 1px;
+        width: 200px;
+        height: 50px;
+    }
+
+.table-title .add-new {
+    float: right;
+    height: 30px;
+    font-weight: bold;
+    font-size: 12px;
+    text-shadow: none;
+    min-width: 100px;
+    border-radius: 50px;
+    line-height: 13px;
+}
+
+    .table-title .add-new i {
+        margin-right: 4px;
+    }
+
+table.table {
+    table-layout: fixed;
+}
+
+    table.table tr th, table.table tr td {
+        border-color: #e9e9e9;
+    }
+
+    table.table th i {
+        font-size: 13px;
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+    table.table th:last-child {
+        width: 100px;
+    }
+
+    table.table td a {
+        cursor: pointer;
+        display: inline-block;
+        margin: 0 5px;
+        min-width: 24px;
+    }
+
+        table.table td a.add {
+            color: #27C46B;
+        }
+
+        table.table td a.edit {
+            color: #FFC107;
+        }
+
+        table.table td a.delete {
+            color: #E34724;
+        }
+
+    table.table td i {
+        font-size: 19px;
+    }
+
+    table.table td a.add i {
+        font-size: 24px;
+        margin-right: -1px;
+        position: relative;
+        top: 3px;
+    }
+
+    table.table .form-control {
+        height: 32px;
+        line-height: 32px;
+        box-shadow: none;
+        border-radius: 2px;
+    }
+
+        table.table .form-control.error {
+            border-color: #f50000;
+        }
+
+    table.table td .add {
+        display: none;
+    }
+
+.myPosition {
+    position: absolute;
+    right: 1000px; /* use a length or percentage */
+}
+
+.borderless td, .borderless th {
+    border-width: 0;
+}
+
+/*.table-borderless td,
+    .table-borderless th,
+    .table-borderless tr {
+        border: 0;
+    }*/
+
+/*.table.no-border tr td, .table.no-border tr th {
+        border-width: 0;
+    }*/
+
+table.borderless {
+    border: none;
+    /*margin-top: 20px;*/
+}
+
+    table.borderless > thead > tr > th {
+        border: none;
+    }
+
+    table.borderless > tbody > tr > td {
+        border: none;
+    }
+
+
+/*loading*/
+
+/*loading*/ /*input[readonly] {
+        background-color: transparent;
+        border: 0;
+        font-size: 1em;
+    }*/
+
+input[readonly].classBGcolor {
+    background-color: transparent;
+    /*border: 0;
+        font-size: 1em;*/
+}
+
+input[readonly].classBorder0 {
+    background-color: transparent;
+    border: 0;
+    /*font-size: 1em;*/
+}
+
+/*for modal*/
+/*#productsTable tr:hover {
+        background-color: yellow;
+    }*/
+tr.normal td {
+    color: black;
+    background-color: white;
+}
+
+tr.highlighted td {
+    color: white;
+    background-color: red;
+}
+
+input[type=text]::-ms-clear {
+    display: none;
+}
+
+.row input[type="button"] {
+    position: sticky;
+    top: 0px;
+    left: 10px;
+    background: #71CCD9;
+}
+
+.form-group {
+    position: relative;
+    left: 70px;
+}
+
+.col-md-9 .checkbox {
+    position: relative;
+    left: 25px;
+}
+
+
+/*@media print {
+    .header-print {
+        display: table-header-group;
+    }
+}*/

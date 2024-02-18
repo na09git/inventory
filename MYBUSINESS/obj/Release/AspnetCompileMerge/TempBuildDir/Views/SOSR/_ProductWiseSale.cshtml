@@ -1,0 +1,389 @@
+﻿@model IEnumerable<MYBUSINESS.Models.SO>
+
+@{
+    /**/
+
+
+    decimal totProfit = 0;
+    decimal profit = 0;
+    decimal totLoss = 0;
+    decimal loss = 0;
+    decimal salePrice;
+    decimal orderSalePrice = 0;
+    decimal totOrderSalePrice = 0;
+    decimal returnSalePrice = 0;
+    decimal totReturnSalePrice = 0;
+    decimal perItemDiscount = 0;
+    int totQty = 0;
+    int totRtrn = 0;
+
+    <div id="NewData">
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        @*<div class="box-header">
+                                <h3 class="box-title">Hover Data Table</h3>
+                            </div>*@
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <table class="table table-hover cell-border" id="SOSRIndex">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayName("Month")
+                                        </th>
+                                        <th style="display:none;">
+                                            @Html.DisplayNameFor(model => model.Id)
+                                        </th>
+
+                                        <th>
+                                            @*@Html.DisplayName("Order No.")*@
+                                            Order No.
+                                        </th>
+
+                                        <th>
+                                            @Html.DisplayName("Customer Name")
+                                        </th>
+                                        @*<th>
+                                                @Html.DisplayName("Product Name")
+                                            </th>*@
+                                        <th>
+                                            @Html.DisplayName("Quantity")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("Per Pack")
+                                        </th>
+
+                                        <th>
+                                            Type
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("Sale Price")
+                                        </th>
+
+                                        <th>
+                                            @Html.DisplayName("Profit")
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        //if bill has only discount then we have to add this if condition :(
+                                        if (item.SaleOrderQty > 0 || item.SaleReturnQty > 0)
+                                        {
+
+                                            foreach (var subItem in item.SODs)
+                                            {
+                                                if (subItem.SaleType == false)
+                                                { totQty += (int)subItem.Quantity; }
+                                                else
+                                                { totRtrn += (int)subItem.Quantity; }
+
+                                                <tr>
+
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Date)
+                                                    </td>
+                                                    <td style="display:none;">
+                                                        @Html.DisplayFor(modelItem => item.Id)
+                                                    </td>
+
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.SOSerial)
+                                                    </td>
+
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Customer.Name)
+                                                    </td>
+                                                    @*<td>
+                                                            @(subItem.Product.Name)
+                                                        </td>*@
+
+                                                    <td>
+                                                        @(subItem.Quantity)
+                                                    </td>
+                                                    <td>
+                                                        @{
+                                                            if (subItem.IsPack == true)
+                                                            {
+                                                                @(subItem.PerPack)
+                                                            }
+                                                        }
+
+                                                    </td>
+                                                    @*<td>
+                                                            @{
+
+                                                                monthlySale += (int)(subItem.SalePrice * subItem.Quantity);
+                                                                TotSale += (int)(subItem.SalePrice * subItem.Quantity);
+                                                            }
+                                                            @(subItem.SalePrice * subItem.Quantity)
+                                                        </td>*@
+                                                    <td>
+                                                        @if (subItem.SaleType == false)
+                                                        {
+                                                            @("Order")
+                                                        }
+                                                        else
+                                                        {
+                                                            @("Return")
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @*@Html.DisplayFor(modelSubItem => subItem.Quantity)*@
+                                                        @{
+                                                            if (subItem.SaleType == false)
+                                                            {
+                                                                if (subItem.IsPack == true)
+                                                                { salePrice = (decimal)(subItem.SalePrice * subItem.Quantity * subItem.PerPack); }
+                                                                else
+                                                                { salePrice = (decimal)(subItem.SalePrice * subItem.Quantity); }
+
+
+                                                                if (item.Discount > 0 && item.SaleOrderQty > 0)
+                                                                {
+                                                                    perItemDiscount = (decimal)(item.Discount / item.SaleOrderQty);
+
+
+                                                                    if (subItem.IsPack == true)
+                                                                    { salePrice = salePrice - (decimal)(perItemDiscount * subItem.Quantity * subItem.PerPack); }
+                                                                    else
+                                                                    { salePrice = salePrice - (decimal)(perItemDiscount * subItem.Quantity); }
+
+                                                                }
+                                                                if (item.Discount < 0 && item.SaleOrderQty > 0)
+                                                                {
+                                                                    perItemDiscount = (decimal)(item.Discount / item.SaleOrderQty);
+                                                                    
+
+                                                                    if (subItem.IsPack == true)
+                                                                    { salePrice = salePrice + Math.Abs((decimal)(perItemDiscount * subItem.Quantity * subItem.PerPack)); }
+                                                                    else
+                                                                    { salePrice = salePrice + Math.Abs((decimal)(perItemDiscount * subItem.Quantity)); }
+                                                                }
+
+                                                                totOrderSalePrice += salePrice;
+
+
+                                                                @(salePrice.ToString("0.00"))
+                                                            }
+                                                            else
+                                                            {
+
+                                                                if (subItem.IsPack == true)
+                                                                { salePrice = (decimal)(subItem.SalePrice * subItem.Quantity * subItem.PerPack); }
+                                                                else
+                                                                { salePrice = (decimal)(subItem.SalePrice * subItem.Quantity); }
+
+                                                                
+
+
+
+                                                                //if (item.Discount > 0 && item.SaleReturnQty > 0)
+                                                                //{
+                                                                //    perItemDiscount = (decimal)(item.Discount / item.SaleReturnQty);
+                                                                //    salePrice = salePrice + (decimal)(perItemDiscount * subItem.Quantity * subItem.PerPack);
+                                                                //}
+                                                                //if (item.Discount < 0 && item.SaleReturnQty > 0)
+                                                                //{
+                                                                //    perItemDiscount = (decimal)(item.Discount / item.SaleReturnQty);
+                                                                //    salePrice = salePrice - Math.Abs((decimal)(perItemDiscount * subItem.Quantity * subItem.PerPack));
+                                                                //}
+                                                                totReturnSalePrice += salePrice;
+                                                                @(salePrice.ToString("0.00"))
+                                                            }
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @{
+                                                            if (subItem.SaleType == false)
+                                                            {
+
+                                                                if (subItem.IsPack == true)
+                                                                { profit = (decimal)(subItem.SalePrice * subItem.Quantity * subItem.PerPack) - (decimal)(subItem.PurchasePrice * subItem.Quantity * subItem.PerPack); }
+                                                                else
+                                                                { profit = (decimal)(subItem.SalePrice * subItem.Quantity) - (decimal)(subItem.PurchasePrice * subItem.Quantity); }
+
+                                                                if (item.Discount > 0 && item.SaleOrderQty > 0)
+                                                                {
+                                                                    perItemDiscount = (decimal)(item.Discount / item.SaleOrderQty);
+
+                                                                    if (subItem.IsPack == true)
+                                                                    { profit = profit - (decimal)(perItemDiscount * subItem.Quantity * subItem.PerPack); }
+                                                                    else
+                                                                    { profit = profit - (decimal)(perItemDiscount * subItem.Quantity); }
+
+                                                                }
+                                                                if (item.Discount < 0 && item.SaleOrderQty > 0)
+                                                                {
+                                                                    perItemDiscount = (decimal)(item.Discount / item.SaleOrderQty);
+
+
+                                                                    if (subItem.IsPack == true)
+                                                                    { profit = profit + Math.Abs((decimal)(perItemDiscount * subItem.Quantity * subItem.PerPack)); }
+                                                                    else
+                                                                    { profit = profit + Math.Abs((decimal)(perItemDiscount * subItem.Quantity)); }
+
+
+                                                                }
+                                                                totProfit += profit;
+                                                                @(profit.ToString("0.00"))
+                                                            }
+                                                            else
+                                                            {
+
+                                                                if (subItem.IsPack == true)
+                                                                { loss = (decimal)(subItem.SalePrice * subItem.Quantity * subItem.PerPack) - (decimal)(subItem.PurchasePrice * subItem.Quantity * subItem.PerPack); }
+                                                                else
+                                                                { loss = (decimal)(subItem.SalePrice * subItem.Quantity) - (decimal)(subItem.PurchasePrice * subItem.Quantity); }
+
+
+                                                                //if (item.Discount > 0 && item.SaleReturnQty > 0)
+                                                                //{
+                                                                //    perItemDiscount = (decimal)(item.Discount / item.SaleReturnQty);
+                                                                //    loss = loss + (decimal)(perItemDiscount * subItem.Quantity);
+                                                                //}
+                                                                //if (item.Discount < 0 && item.SaleReturnQty > 0)
+                                                                //{
+                                                                //    perItemDiscount = (decimal)(item.Discount / item.SaleReturnQty);
+                                                                //    loss = loss - Math.Abs((decimal)(perItemDiscount * subItem.Quantity));
+                                                                //}
+                                                                totLoss += loss;
+                                                                @(loss.ToString("0.00"))
+                                                            }
+                                                        }
+
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                                <tr>
+
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Date)
+                                                    </td>
+                                                    <td style="display:none;">
+                                                        @Html.DisplayFor(modelItem => item.Id)
+                                                    </td>
+
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.SOSerial)
+                                                    </td>
+
+
+                                                    <td>
+                                                        @*@(subItem.Product.Name)*@
+                                                    </td>
+
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>Discount</td>
+                                                    <td>
+                                                        @{
+
+                                                            //its mean loss
+                                                            salePrice = (decimal)(item.Discount);
+                                                            totOrderSalePrice -= salePrice;
+                                                            @(salePrice.ToString("0.00"))
+
+
+
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @{
+
+                                                            profit = (decimal)(item.Discount);
+                                                            totProfit -= profit;
+                                                            @(profit.ToString("0.00"))
+
+                                                        }
+
+                                                    </td>
+                                                </tr>
+
+                                        }
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr style="font-weight:bold">
+                                        <td></td>
+                                        <td></td>
+
+                                        <td>Orders</td>
+                                        <td>@(totQty)</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>@(totOrderSalePrice)</td>
+
+                                        <td>@(totProfit.ToString("0.00"))</td>
+                                    </tr>
+                                    <tr style="font-weight:bold">
+                                        <td></td>
+                                        <td></td>
+
+                                        <td>Returns</td>
+                                        <td>@(totRtrn)</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>@(totReturnSalePrice)</td>
+
+                                        <td>@(totLoss.ToString("0.00"))</td>
+                                    <tr style="font-weight:900">
+                                        <td></td>
+                                        <td></td>
+
+                                        <td>Net Profit</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+
+                                        <td>@((totProfit - totLoss).ToString("0.00"))</td>
+                                    </tr>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        //$('#SOSRIndex').DataTable({
+        //    fixedHeader: {
+        //        footer: true
+        //    }
+        //});
+        $('#SOSRIndex').DataTable({
+            //fixedHeader: {
+            //    header: true,
+            //    footer: true
+            //},
+            //"sScrollX": "100%",
+            //"scrollX": true,
+            "scrollY": "400px",
+            "scrollCollapse": true,
+            "paging": false,
+            "bInfo": false,
+            "order": [[2, "asc"]],
+            "searching": false
+
+        });
+
+
+    });
+
+
+</script>

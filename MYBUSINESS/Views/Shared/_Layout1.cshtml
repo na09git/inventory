@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - ShopON</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @*<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">*@
+    @*<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">*@
+    @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">*@
+
+    <link href="~/Content/custom/icon.css" rel="stylesheet" />
+    @*<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+        <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>*@
+
+    @*<link href="~/Content/custom/downloads/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />*@
+
+    @*<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/redmond/jquery-ui.min.css" rel="stylesheet" type="text/css" />*@
+    @*v this css is downloaded from above url v*@
+
+
+    <link href="@Url.Content("~/Content/custom/downloads/jquery-ui-1.12.1.custom/jquery-ui.min.css")" rel="stylesheet" type="text/css" />
+    @*<link href="@Url.Content("~/Content/custom/downloads/jquery-ui.min.css")" rel="stylesheet" type="text/css" />*@
+    <script src="~/Content/custom/downloads/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+
+    <style>
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+    </style>
+</head>
+@*<body>*@
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @*@Html.ActionLink("ShopON", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+            </div>
+            @if (Session["CurrentUser"] != null)
+            {
+                MYBUSINESS.Models.Employee user = (MYBUSINESS.Models.Employee)HttpContext.Current.Session["CurrentUser"];
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Summary", "Index", "Home")</li>
+                        <li>@*@Html.ActionLink("Products", "Index", "Products")*@</li>
+                        <li class="dropdown">
+                            <a href="/Products/Index">Products <b class="caret"></b></a>
+                            <ul id="products-menu" class="dropdown-menu clearfix" role="menu">
+                                <li><a href="/Products/Create">Create New Product</a></li>
+                            </ul>
+                        </li>
+
+                        <li>@*@Html.ActionLink("Suppliers", "Index", "Suppliers")*@</li>
+                        <li class="dropdown">
+                            <a href="/Suppliers/Index">Suppliers <b class="caret"></b></a>
+                            <ul id="suppliers-menu" class="dropdown-menu clearfix" role="menu">
+                                <li><a href="/Suppliers/Create">Create New Supplier</a></li>
+                            </ul>
+                        </li>
+                        <li>@*@Html.ActionLink("Purchases", "Index", "POPR")*@</li>
+                        <li class="dropdown">
+                            <a href="/POPR/Index">Purchases <b class="caret"></b></a>
+                            <ul id="Purchases-menu" class="dropdown-menu clearfix" role="menu">
+                                <li><a href="/POPR/Create?IsReturn=false">Create New Purchase</a></li>
+                            </ul>
+                        </li>
+
+                        @*<li>@Html.ActionLink("Customers", "Index", "Customers")</li>*@
+                        <li class="dropdown">
+                            <a href="/Customers/Index">Customers <b class="caret"></b></a>
+                            <ul id="Customers-menu" class="dropdown-menu clearfix" role="menu">
+                                <li><a href="/Customers/Create">Create New Customer</a></li>
+                            </ul>
+                        </li>
+                        <li>@Html.ActionLink("Sales", "Index", "SOSR")</li>
+
+                        <li>@Html.ActionLink("Create New Sale Order", "Create", "SOSR")</li>
+
+
+                        @*Html.RenderAction("_Menu", "Right");*@
+
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                        <li>@Html.ActionLink(user.Login, "Edit", "Employees", new { id = 0 }, null)</li>
+                        <li>@Html.ActionLink("Logout", "Logout", "UserManagement")</li>
+
+
+                    </ul>
+
+                    @*@Html.Partial("_LoginPartial")*@
+                </div>
+            }
+
+        </div>
+    </div>
+    <div class="body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>@*&copy; @DateTime.Now.Year - ShopON*@</p>
+        </footer>
+    </div>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

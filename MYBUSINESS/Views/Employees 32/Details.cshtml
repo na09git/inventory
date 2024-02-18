@@ -1,0 +1,163 @@
+﻿@model MYBUSINESS.Models.Employee
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Employee</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Login)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Login)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Password)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Password)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EmployeeTypeId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EmployeeTypeId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RightId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RightId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RankId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RankId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Designation)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Designation)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Probation)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Probation)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RegistrationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegistrationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Casual)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Casual)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Earned)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Earned)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreateDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UpdateDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UpdateDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Department.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Department.Name)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

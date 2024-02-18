@@ -1,0 +1,173 @@
+﻿@*@model IEnumerable<MYBUSINESS.Models.SO>*@
+@model MYBUSINESS.Models.DashboardViewModel
+
+
+@{
+               
+
+    <div id="NewData">
+        <div class="noScreen">
+            <center><h4>@ViewBag.StartDate - @ViewBag.EndDate</h4></center>
+        </div>
+        <hr />
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <center><h3 class="box-title">Products</h3></center>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-bordered table-hover" id="PWS">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Opening stock</th>
+                                        <th>Purchased stock</th>
+                                        <th>Total</th>
+                                        <th>Sold stock</th>
+                                        <th>Balance</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        
+                                        int OpeningStock = 0;
+                                        int ClosingStock = 0;
+                                        int PurchasedStock = 0;
+                                        int TotalStock = 0;
+                                        int SoldStock = 0;
+
+                                        foreach (var product in Model.Products)
+                                        {
+                                            
+                                            if (product.SODs.Count > 0)
+                                            {
+                                                OpeningStock = (int)product.SODs.First().OpeningStock;
+                                                ClosingStock = (int)product.SODs.Last().OpeningStock;
+
+                                            }
+                                            if (product.PODs.Count > 0)
+                                            {
+                                                OpeningStock = (int)product.PODs.First().OpeningStock;
+                                                ClosingStock = (int)product.PODs.Last().OpeningStock;
+
+                                            }
+
+                                            
+                                            PurchasedStock = 0;
+                                            foreach (var pod in product.PODs)
+                                            {
+                                                if (pod.SaleType == false)//purchase order
+                                                {
+                                                    PurchasedStock += (int)pod.Quantity;
+                                                }
+                                                else
+                                                {
+                                                    PurchasedStock -= (int)pod.Quantity;
+                                                }
+                                            }
+                                            SoldStock = 0;
+                                            foreach (var sod in product.SODs)
+                                            {
+                                                if (sod.SaleType == false)//sale order
+                                                {
+                                                    SoldStock += (int)sod.Quantity;
+                                                }
+                                                else
+                                                {
+                                                    SoldStock -= (int)sod.Quantity;
+                                                }
+                                            }
+
+                                            <tr>
+
+                                                <td>
+                                                    @product.Name
+                                                </td>
+                                                <td>
+                                                    @* order waly *@
+                                                    @OpeningStock
+                                                </td>
+                                                <td>
+                                                    @PurchasedStock
+                                                </td>
+
+                                                <td>
+                                                    @* return waly *@
+                                                    @(TotalStock= OpeningStock + PurchasedStock)
+
+                                                </td>
+                                                <td>
+                                                    @SoldStock
+
+                                                </td>
+                                                <td>
+                                                    @(TotalStock - SoldStock)
+                                                </td>
+
+                                            </tr>
+                                            //}
+
+                                        }
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    @*<tr style="font-weight:bold">
+                                        <td>Total</td>
+                                        <td>@totSOQty</td>
+                                        <td>@totSOAmnt.ToString("0.00")</td>
+                                        <td>@totSRQty</td>
+                                        <td>@totSRAmnt.ToString("0.00")</td>
+                                        <td>@totProfit.ToString("0.00")</td>
+                                    </tr>*@
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    @* other table *@
+
+                    
+                </div>
+            </div>
+        </section>
+
+
+
+
+        @* ////////////////////////////////////////////////////////////////////////////////////////////////// *@
+
+    </div>
+
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+
+        $('#PWS').DataTable({
+            //fixedHeader: {
+            //    header: true,
+            //    footer: true
+            //},
+            //"sScrollX": "100%",
+            //"scrollX": true,
+            "scrollY": "400px",
+            "scrollCollapse": true,
+            "paging": false,
+            "bInfo": false,
+            "order": [[0, "asc"]],
+            "searching": false
+        });
+
+       
+
+
+    });
+
+
+</script>

@@ -1,0 +1,44 @@
+﻿body {
+}
+
+
+/*.treeview:hover .treeview-menu {
+    display: block;
+    visibility: visible;
+    transition: 0.5s;
+}*/
+
+/*.treeview .treeview-menu {
+    transform-origin: top;
+    transition: 0.5s;
+    font-weight: 5pt;
+}*/
+
+/*.treeview:hover .pull-right-container {
+    transform: rotate(-90deg);
+    transition: 0;
+}*/
+
+
+
+/*----------------------------------------------*/
+
+/*serach bar position*/
+.navigation-search {
+    position: relative;
+    top: 10px;
+    color: red;
+    left: 600px;
+}
+.navigation-search .form-inline input {
+    border-radius: 5px;
+    position: relative;
+    width: 250px;
+}
+
+/*custom menu strip*/
+.dropdown:hover .dropdown-menu {
+    display: block;
+    background-color:whitesmoke;
+}
+

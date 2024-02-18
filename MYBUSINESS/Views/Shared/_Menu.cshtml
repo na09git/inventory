@@ -1,0 +1,39 @@
+﻿@model IEnumerable<MYBUSINESS.Models.Right>
+
+
+@*txt_loggedas.Text = Session["user"].ToString();*@
+@if (Session["CurrentUser"] != null)
+{
+    //int CurrentUserId = (int)Session["CurrentUserId"];
+
+    MYBUSINESS.Models.Employee user = (MYBUSINESS.Models.Employee)HttpContext.Current.Session["CurrentUser"];
+
+    foreach (var item in Model)
+    {
+
+        if ((item.Employee.Id == user.Id) && (item.Allowed.Value == true) && (item.MenuView.Value == true))
+        {
+            <li>
+                @Html.ActionLink(item.Text, item.Action, item.Controller)
+            </li>
+
+        }
+
+    }
+    <li style="font-weight:bold; color:white">
+        @Html.ActionLink(user.FirstName + " " + user.LastName, "Index", "DashBoard")
+    </li>
+    @*<div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li style="font-weight:bold;" >
+                    @Html.ActionLink(user.FirstName + " " + user.LastName, "Index", "DashBoard")
+                </li>
+            </ul>
+        </div>*@
+    @*<div class="text-right">
+            <b>@Html.ActionLink(user.FirstName + " " + user.LastName, "Index", "DashBoard")</b>
+        </div>*@
+
+
+}
+

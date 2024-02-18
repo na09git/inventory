@@ -1,0 +1,395 @@
+﻿@model IEnumerable<MYBUSINESS.Models.SO>
+
+@{
+                /**/
+
+                /**/
+
+                int TotalSOQty = 0;
+                decimal TotalSOAmout = 0;
+                int TotalSRQty = 0;
+                decimal TotalSRAmout = 0;
+                decimal TotalProfit = 0;
+                decimal BillPaid = 0;
+                decimal Discount = 0;
+                decimal Balance = 0;
+                decimal PrevBalance = 0;
+                string whtieSpace = ((char)160).ToString() + ((char)160).ToString() + ((char)160).ToString() + ((char)160).ToString();
+                MYBUSINESS.Models.Employee currentUser = (MYBUSINESS.Models.Employee)HttpContext.Current.Session["CurrentUser"];
+                //Dictionary<int, int> LstMaxSerialNo = new Dictionary<int, int>();
+                //Dictionary<int, int> LstMaxSerialNo = @ViewBag.LstMaxSerialNo;
+                Dictionary<int, int> LstMaxSerialNo = ViewBag.LstMaxSerialNo as Dictionary<int, int>;
+                <div id="NewData">
+                    <section class="content">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="box">
+                                    @*<div class="box-header">
+                                            <h3 class="box-title">Hover Data Table</h3>
+                                        </div>*@
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <table class="table table-hover cell-border" id="SOSRIndex">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:13%;">
+                                                        @Html.DisplayNameFor(model => model.Date)
+                                                    </th>
+                                                    <th>
+                                                        Order No.
+                                                    </th>
+
+                                                    <th style="display:none;"></th>
+
+                                                    <th style="width:15%;">
+                                                        @Html.DisplayName("Customer")
+
+                                                    </th>
+
+
+                                                    <th style="display:none;">
+                                                        @Html.DisplayNameFor(model => model.SaleOrderQty)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.SaleOrderAmount)
+                                                    </th>
+
+                                                    <th style="display:none;">
+                                                        @Html.DisplayNameFor(model => model.SaleReturnQty)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.SaleReturnAmount)
+                                                    </th>
+                                                    @*
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.BillAmount)
+                                                        </th>*@
+
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.Discount)
+                                                    </th>
+                                                    <th>
+                                                        Prev. Balance
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.BillPaid)
+                                                    </th>
+
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.Balance)
+                                                    </th>
+                                                    @if (currentUser.EmployeeTypeId == 0)
+                                                    {
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.Profit)
+                                                        </th>
+
+                                                    }
+                                                    <th>
+                                                        User
+                                                    </th>
+
+
+                                                    <th style="width:8%;">
+                                                        Actions
+                                                    </th>
+
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Date)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.SOSerial)
+                                                        </td>
+
+                                                        <td class="CustomerIdForSearch" style="display:none;">
+                                                            @Html.DisplayFor(modelItem => item.Customer.Id)
+                                                        </td>
+                                                        <td class="CustomerNameForSearch">
+
+                                                            @*@Html.ActionLink(item.Customer.Name, "Edit", new { id = item.Id })*@
+
+                                                            @*<a href="#" data-toggle="tooltip" data-placement="top" title="Search this customer in sales"> @Html.DisplayFor(modelItem => item.Customer.Name)</a>*@
+
+                                                            <ul class="nav navbar-nav">
+                                                                <li class="dropdown">
+                                                                    @*<a href="/Products/Index">@item.Name <b class="caret"></b></a>*@
+                                                                    @item.Customer.Name <b class="caret"></b>
+                                                                    <ul id="products-menu" class="dropdown-menu clearfix" role="menu">
+                                                                        <li><a href="#" data-toggle="tooltip" data-placement="top" title="Search this customer in Sales">Search in Sales History</a></li>
+
+                                                                    </ul>
+                                                                </li>
+                                                            </ul>
+
+
+
+                                                        </td>
+
+
+                                                        <td style="display:none;">
+                                                           
+                                                            @Html.DisplayFor(modelItem => item.SaleOrderQty)
+
+                                                            @{ TotalSOQty += (int)item.SaleOrderQty;}
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.SaleOrderAmount)
+                                                            @{TotalSOAmout += (decimal)item.SaleOrderAmount;}
+                                                        </td>
+
+                                                        <td style="display:none;">
+                                                            @Html.DisplayFor(modelItem => item.SaleReturnQty)
+                                                            @{TotalSRQty += (int)item.SaleReturnQty;}
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.SaleReturnAmount)
+                                                            @{TotalSRAmout += (decimal)item.SaleReturnAmount;}
+                                                        </td>
+
+                                                        @*
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.BillAmount)
+                                                            </td>*@
+
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Discount)
+                                                            @{Discount += (decimal)item.Discount;}
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.PrevBalance)
+                                                            @{PrevBalance += (decimal)item.PrevBalance;}
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.BillPaid)
+                                                            @{BillPaid += item.BillPaid;}
+
+                                                        </td>
+
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Balance)
+                                                        </td>
+                                                        @if (currentUser.EmployeeTypeId == 0)
+                                                        {
+                                                            <td>
+                                                                @*@(item.BillAmount - (decimal)item.Discount - item.TotalPurchaseAmount)*@
+                                                                @Html.DisplayFor(modelItem => item.Profit)
+                                                                @{TotalProfit += (decimal)item.Profit;}
+                                                            </td>
+                                                        }
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Employee.Login)
+                                                        </td>
+                                                        <td>
+                                                            @{
+
+                                                                if (LstMaxSerialNo != null && LstMaxSerialNo.ContainsValue((int)item.SOSerial))
+                                                                {
+                                                                    @Html.ActionLink("Update", "Edit", new { id = item.Id, update = true })
+                                                                }
+                                                                else
+                                                                {
+
+                                                                    @Html.ActionLink(whtieSpace + "View", "Edit", new { id = item.Id, update = false })
+                                                                }
+
+                                                            }
+                                                            |
+                                                            @Html.ActionLink("Print", "PrintSO3", new { id = item.Id })
+                                                            @*|
+                                                                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                                                @Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
+                                                        </td>
+                                                    </tr>
+                                                    //Balance = TotalSOAmout - TotalSRAmout - BillPaid - Discount - PrevBalance;
+                                                }
+                                            </tbody>
+                                            <tfoot>
+                                                <tr style="font-weight:bold">
+                                                    <td></td>
+                                                    <td>@Model.Count()</td>
+                                                    <td style="display:none;"></td>
+                                                    <td></td>
+                                                    <td style="display:none;">@TotalSOQty</td>
+                                                    <td>@TotalSOAmout</td>
+
+                                                    <td style="display:none;">@TotalSRQty</td>
+                                                    <td>@TotalSRAmout</td>
+
+                                                    <td>@Discount</td>
+                                                    <td>@*@PrevBalance*@</td>
+                                                    <td>@BillPaid</td>
+
+                                                    <td>@*@ViewBag.TotalBalance*@</td>
+                                                    @if (currentUser.EmployeeTypeId == 0)
+                                                    {
+                                                        <td>@TotalProfit.ToString("0")</td>
+                                                    }
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        //$('#SOSRIndex').DataTable({
+        //    fixedHeader: {
+        //        footer: true
+        //    }
+        //});
+        $('#SOSRIndex').DataTable({
+            //fixedHeader: {
+            //    header: true,
+            //    footer: true
+            //},
+            "scrollX": true,
+            "scrollY": "400px",
+            "scrollCollapse": true,
+            "paging": false,
+            "bInfo": false,
+            "order": [[1, "desc"]],
+            "searching": true,
+
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api(), data;
+
+                // Remove the formatting to get integer data for summation
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+                // Order No
+                pageTotal = api
+                    .column(1, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        a += 1;
+                        //alert(a);
+                        return intVal(a);
+                    }, 0);
+                $(api.column(1).footer()).html(pageTotal);
+
+
+                // Order Qty
+                pageTotal = api
+                    .column(4, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $(api.column(4).footer()).html(pageTotal);
+
+
+
+                // Order Amount
+                pageTotal = api
+                    .column(5, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $(api.column(5).footer()).html(pageTotal);
+
+                // Return Qty
+                pageTotal = api
+                    .column(6, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $(api.column(6).footer()).html(pageTotal);
+
+                // Return amnt
+                pageTotal = api
+                    .column(7, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $(api.column(7).footer()).html(pageTotal);
+
+                // Discount
+                pageTotal = api
+                    .column(8, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $(api.column(8).footer()).html(pageTotal);
+
+
+                // Bill paid
+                pageTotal = api
+                    .column(10, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $(api.column(10).footer()).html(pageTotal);
+
+                // Balance
+                //pageTotal = api
+                //    .column(11, { page: 'current' })
+                //    .data()
+                //    .reduce(function (a, b) {
+                //        return intVal(a) + intVal(b);
+                //    }, 0);
+                //$(api.column(11).footer()).html(pageTotal);
+
+                // Profit
+                pageTotal = api
+                    .column(12, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $(api.column(12).footer()).html(pageTotal);
+
+
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        });
+
+
+    });
+
+
+</script>

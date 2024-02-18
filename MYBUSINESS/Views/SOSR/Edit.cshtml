@@ -1,0 +1,476 @@
+﻿@model MYBUSINESS.Models.SaleOrderViewModel
+
+@{
+    ViewBag.Title = "Update SO";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<link href="@Url.Content("~/Content/custom/downloads/jquery-ui-1.12.1.custom/jquery-ui.min.css")" rel="stylesheet" type="text/css" />
+@*<link href="@Url.Content("~/Content/custom/downloads/jquery-ui.min.css")" rel="stylesheet" type="text/css" />*@
+<script src="~/Content/custom/downloads/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+
+<link href="@Url.Content("~/Content/custom/custom.css")" rel="stylesheet" type="text/css" />
+<script src="~/Content/custom/customerSOSR.js"></script>
+<script src="~/Content/custom/downloads/jquery.mcautocomplete.js"></script>
+<script src="~/Content/custom/downloads/jquery.scannerdetection.js"></script>
+@*<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">*@
+
+@*@using (Html.BeginForm())*@
+@using (Html.BeginForm(null, null, FormMethod.Post, new { name = "SOEdit", id = "SOEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="container" id="container">
+        @Html.HiddenFor(model => model.SaleOrder.Id)
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-offset-5"><h2>Sale <b>Order</b></h2></div>
+                    @*<div class="col-sm-4">
+                            <button type="button" id="addNewRow" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button>
+                        </div>*@
+                </div>
+                <input type="hidden" name="SaleOrder.SaleReturn" id="saleReturn" value=@ViewBag.IsReturn />
+                <input type="hidden" name="SaleOrder.CustomerId" id="idnCustomer" value="@Model.SaleOrder.CustomerId" />
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h5><b>Customer Name</b></h5>
+                        <input type="text" autocomplete="off" class="form-control" name="Customer.Name" id="customer" value="@(ViewBag.CustomerName)">
+                        <font size="1">Or @*<a id="OpenNewCustForm" href="">*@Add New Customer@*</a>*@</font>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <h5><b>Address</b></h5>
+                        <input type="text" autocomplete="off" class="form-control" name="Customer.Address" id="customerAddress" readonly tabindex="-1" value="@(ViewBag.CustomerAddress)">
+                    </div>
+
+                    @*<input type="text" id="search" />*@
+                </div>
+
+            </div>
+            <table id="selectedProducts" class="table table-bordered">
+                <thead>
+                    <tr>
+                        @*<th>
+                                Hidden
+                            </th>*@
+                        @*<th>
+                                @Html.DisplayNameFor(model => model.Product.Id)
+                            </th>*@
+                        <th style="width:5%;">#</th>
+                        <th style="width:25%;">
+                            @Html.DisplayNameFor(model => model.Product.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Product.SalePrice)
+                        </th>
+                        <th>
+                            @*@Html.DisplayNameFor(model => model.SaleOrderDetail.Quantity)*@
+                            Quantity
+                        </th>
+                        <th>
+                            Unit
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Product.PerPack)
+                        </th>
+
+                        <th>
+                            Item Total
+                        </th>
+                        <th style="display:none;">
+                            Type
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                    @if (Model.SaleOrderDetail.Count > 0)
+                    {
+                        int sNo = 0;
+                        foreach (var item in Model.SaleOrderDetail)
+                        {
+
+                            <tr>
+                                <td id="SNo0">@(sNo + 1)</td>
+                                <td style="display:none;"><input type="hidden" name="SaleOrderDetail.Index" value="@sNo" /></td>
+                                <td style="display:none;"><input type="text" value=@item.ProductId readonly class="form-control classBGcolor" name="SaleOrderDetail[@sNo].ProductId" id="idn@(sNo)"></td>
+                                @* below line -- if we dont put "()" then string after space cut's off *@
+                                <td><input type="text" autocomplete="off" value="@(item.Product.Name)" class="form-control" name="name@(sNo)" id="name@(sNo)"></td>
+                                <td><input type="text" autocomplete="off" value=@item.SalePrice class="form-control classBGcolor" name="SaleOrderDetail[@sNo].SalePrice" id="salePrice@(sNo)"></td>
+                                <td><input type="text" autocomplete="off" value=@item.Quantity class="form-control" name="SaleOrderDetail[@sNo].Quantity" id="quantity@(sNo)"></td>
+                                <td>
+                                    @Html.DropDownList("SaleOrderDetail[" + sNo + "].IsPack", new SelectList(ViewBag.UnitTypeOptionList, "Value", "Text", item.IsPack),
+                                        new { @class = "form-control", id = "isPack" + sNo })
+                                </td>
+
+                                <td><input type="text" autocomplete="off" readonly value=@(item.PerPack) class="form-control" name="SaleOrderDetail[@sNo].PerPack" id="perPack@(sNo)"></td>
+
+                                @if (item.IsPack == true)
+                                {//Pack
+                                    <td><input type="text" value=@(item.SalePrice * item.Quantity * item.PerPack) readonly tabindex="-1" class="form-control classBGcolor" name="itemTotal@(sNo)" id="itemTotal@(sNo)"></td>
+                                }
+                                else
+                                {//Item
+                                    <td><input type="text" value=@(item.SalePrice * item.Quantity) readonly tabindex="-1" class="form-control classBGcolor" name="itemTotal@(sNo)" id="itemTotal@(sNo)"></td>
+                                }
+
+
+                                <td style="display:none;">
+                                    @Html.DropDownList("SaleOrderDetail[" + sNo + "].SaleType", new SelectList(ViewBag.OptionLst, "Value", "Text", item.SaleType),
+                                        new { @class = "form-control", id = "saleType" + sNo })
+                                </td>
+
+                                <td>
+                                    <button type="button" id="delete@(sNo)" class="delete btn btn-default add-new"> <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a></button>
+                                </td>
+                            </tr>
+
+                            sNo += 1;
+
+
+
+                        }
+
+
+                    }
+
+                </tbody>
+
+            </table>
+
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <button type="button" id="addNewRow" class="btn btn-info add-new"><i class="fa fa-plus"></i> New Row</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:inline" id="dvCalculations">
+                <table id="grandTotal" class="table borderless">
+                    <thead>
+                        <tr>
+                            <th>
+                                @*@Html.DisplayNameFor(model => model.SaleOrderDetail.Product.Name)*@
+                            </th>
+                            <th>
+                                @*@Html.DisplayNameFor(model => model.SaleOrderDetail.Product.SalePrice)*@
+                            </th>
+                            <th style="width:25%;">
+                                @*@Html.DisplayNameFor(model => model.SaleOrderDetail.Quantity)*@
+                            </th>
+                            <th style="width:20%;">
+                                @*Item Total*@
+                            </th>
+                            <th>
+
+                            </th>
+                            <th>
+                                @*Actions*@
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr id="rOrderTotal">
+                            @*@Html.DisplayNameFor(model => model.SaleOrder.Balance.Product.SalePrice)*@
+
+                            @*<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a product">*@
+
+                            <td><input type="text" readonly class="form-control classBorder0" name="gt1" id="gt1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="gt2" id="gt2" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="OrderTotal" id="OrderTotal" value="Order Total(@ViewBag.orderQty pack, @ViewBag.orderQtyPiece piece)" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="SaleOrder.BillAmount" id="ItemsTotal" value=@(Model.SaleOrder.BillAmount) tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="gt5" id="gt5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr id="rReturnTotal">
+                            <td><input type="text" readonly class="form-control classBorder0" name="rgt1" id="rgt1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="rgt2" id="rgt2" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="ReturnTotal" id="ReturnTotal" value="Return Total(@ViewBag.returnQty pack, @ViewBag.returnQtyPiece piece)" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="ReturnItemsTotal" id="ReturnItemsTotal" value=@(Model.SaleOrder.SaleReturnAmount) tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="rgt5" id="rgt5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr id="rDiscount">
+                            <td><input type="text" readonly class="form-control classBorder0" name="dc1" id="dc1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="dc2" id="dc2" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="dc3" id="dc3" value="Order Discount" tabindex="-1"></td>
+                            <td><input type="text" autocomplete="off" class="form-control" name="SaleOrder.Discount" id="discount" value=@(Model.SaleOrder.Discount)></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="dc5" id="dc5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" readonly class="form-control classBorder0" name="st1" id="st1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="st2" id="st2" tabindex="-1"></td>
+                            <td><b><input type="text" readonly class="form-control classBorder0" name="st3" id="st3" value="Sub Total" tabindex="-1"></b></td>
+                            <td><b><input type="text" readonly class="form-control classBorder0" name="subtotal" id="subtotal" value=@ViewBag.SubTotal tabindex="-1"></b></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="st5" id="st5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pb1" id="pb1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pb2" id="pb2" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pb3" id="pb3" value="Prev. Balance" tabindex="-1"></td>
+                            <td><input readonly type="text" autocomplete="off" class="form-control" name="SaleOrder.PrevBalance" id="PreviousBalance" value=@(Model.SaleOrder.PrevBalance) tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pb5" id="pb5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" readonly class="form-control classBorder0" name="tt1" id="tt1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="tt2" id="tt2" tabindex="-1"></td>
+                            <td><b><input type="text" readonly class="form-control classBorder0" name="tt3" id="tt3" value="Total" tabindex="-1"></b></td>
+                            <td><b><input type="text" readonly class="form-control classBorder0" name="total" id="total" value=@ViewBag.Total tabindex="-1"></b></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="tt5" id="tt5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pd1" id="pd1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pd2" id="pd2" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pd3" id="pd3" value="Paid" tabindex="-1"></td>
+                            <td><input type="text" autocomplete="off" class="form-control" name="SaleOrder.BillPaid" id="paid" value=@(Model.SaleOrder.BillPaid)></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pd5" id="pd5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" readonly class="form-control classBorder0" name="bl1" id="bl1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="bl2" id="bl2" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="bl3" id="bl3" value="Balance" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="SaleOrder.Balance" id="balance" value=@(Model.SaleOrder.Balance) tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="bl5" id="bl5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+
+
+                    </tbody>
+
+                </table>
+
+                <div class="table-title">
+
+                    <div class="row">
+                        @*<div class="col-sm-8"><h2>Sale <b>Order</b></h2></div>*@
+                        <div class="col-sm-3">
+
+                        </div>
+                        <div class="col-sm-7">
+                            @Html.DropDownList("SaleOrder.PaymentMethod", new SelectList(ViewBag.PaymentMethodOptionLst, "Value", "Text", @Model.SaleOrder.PaymentMethod),
+                                          new { @class = "form-control", id = "SaleOrder.PaymentMethod" })
+
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        @*<div class="col-sm-8"><h2>Sale <b>Order</b></h2></div>*@
+                        <div class="col-sm-3">
+
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" autocomplete="off" class="form-control" name="SaleOrder.PaymentDetail" id="SaleOrder.PaymentDetail" value="@Model.SaleOrder.PaymentDetail" placeholder="Cheque No./Online payment No./etc..." data-toggle="tooltip" data-placement="top" title="Enter any details you want">
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        @*<div class="col-sm-8"><h2>Sale <b>Order</b></h2></div>*@
+
+                        <div class="col-sm-3">
+
+                        </div>
+                        <div class="col-sm-7">
+                            <textarea name="SaleOrder.Remarks" rows="1" cols="100" class="form-control" placeholder="These remarks will print on bill">@Model.SaleOrder.Remarks</textarea>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="row">
+                        @*<div class="col-sm-8"><h2>Sale <b>Order</b></h2></div>*@
+                        <div class="col-sm-3">
+
+                        </div>
+                        <div class="col-sm-7">
+                            <textarea name="SaleOrder.Remarks2" rows="1" cols="100" class="form-control" placeholder="These remarks will not print on bill">@Model.SaleOrder.Remarks2</textarea>
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="submit" id="CreateSO" class="btn btn-info add-new">Save</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+
+<script type="text/javascript">
+    //$(document).ready(function () {
+
+    //document.getElementById("OrderTotal").innerHTML = Math.round(document.getElementById("OrderTotal").innerHTML);
+        //$('#balance').val(balance.toFixed(2));
+
+    //    var ot = $('#OrderTotal').val();
+
+    //$('#OrderTotal').val(ot.toFixed(1));
+    //    var rt = $('#ReturnTotal').val();
+    //    alert(rt);
+    //$('#ReturnTotal').val(rt.toFixed(1));
+
+        //_total = ItemsTotal - discount - ReturnsTotal + prevBal;
+        _total = @(Model.SaleOrder.SaleOrderAmount - Model.SaleOrder.Discount - Model.SaleOrder.SaleReturnAmount + Model.SaleOrder.PrevBalance)
+        //
+            //
+        IsReturn = '@(ViewBag.IsReturn)';
+
+        @if (ViewBag.IsUpdate == false)
+        {
+            @:$("#SOEdit :input").prop("disabled", true);
+        }
+
+
+        @foreach (var d in Model.Customers)
+        {
+            @*@:products.push(["@d.Name","@d.SalePrice","@d.Stock"]);*@
+            @:customers.push(["@d.Id","@d.Name", "@d.Address", "@d.Balance"]);
+        }
+
+       @{
+         var carton = 0; //= (d.Stock / d.PerPack);
+         var piece = 0;
+         foreach (var d in Model.Products)
+         {
+            carton = (int)(d.Stock / d.PerPack);
+            piece = (int)(d.Stock % d.PerPack);
+            if (piece == 0)
+            {
+                   @:products.push(["@d.Id", "@d.Name", "@d.SalePrice", "@carton", "@d.PerPack"]); 
+            }
+            else
+            {
+                   @:products.push(["@d.Id", "@d.Name", "@d.SalePrice", "@carton,@piece", "@d.PerPack"]); 
+            }
+         }
+        }
+
+        OnTypeCustomerName('#customer');
+
+        var i;
+        var sodCount = "@Model.SaleOrderDetail.Count()";
+        for (i = 0; i < sodCount; i++)
+        {
+
+            txtSerialNum = i;
+            OnTypeName('#name' + i);
+            TriggerBodyEvents();
+        }
+
+        //TriggerFooterEvents();
+        //update_itemTotal();
+
+
+        $('#btnPrintSO').click(function () {
+            //$("#btnPrintSO").attr("disabled", true);
+            //alert("PrintSO");
+            var newUrl = "@Url.Action("Index", "SOSR")";
+            //alert(newUrl);
+            $.ajax({
+                url: "@Url.Action("PrintSO", "SOSR")",
+                data: { 'SOId': "@Model.SaleOrder.Id"},
+                type: "GET",
+                cache: false,
+                success: function () {
+                //alert(data);
+                //$("#NewData").html(data);
+                window.location.href = newUrl;
+                },
+                error: function () {
+                //$('#lblCommentsNotification').text("Error encountered while saving the comments.");
+                alert('Data provided was not valid');
+                }
+            });
+        });
+
+    //});
+</script>
+
+<div id="dialog-CreateCustomer" title="Create customer dialog">
+    @*@using (Html.BeginForm())*@
+    @*@using (Html.BeginForm("Create", "Customers", FormMethod.Post, new { name = "SOSRCreateNewCustomer", id = "SOSRCreateNewCustomer" }))*@
+    @*{*@
+    @*@Html.AntiForgeryToken()*@
+    @*ViewBag.Controller = "SOSR";
+        ViewBag.Action = "Create";
+        TempData["Controller"] = "SOSR";
+        TempData["Action"] = "Create";*@
+    @*<input type="hidden" name="CustomerId" value="@ViewBag.Data1" />
+        <input type="hidden" name="CustomerId" value="@ViewBag.Data1" />*@
+    <div class="form-horizontal">
+
+        <h4>Add New Customer</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Customer.Id, new { htmlAttributes = new { @class = "form-control", @name = "Customer.Id", @id ="NewCustomerId", @Value = ViewBag.SuggestedNewCustId, @readonly = "readonly" } })*@
+                <input type="text" autocomplete="off" class="form-control" id="NewCustomerId" value=@ViewBag.SuggestedNewCustId readonly="readonly" />
+                @*@Html.ValidationMessageFor(model => model.Customer.Id, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Customer.Name, new { htmlAttributes = new { @class = "form-control", @name = "Customer.Name", @id = "NewCustomerName"} })*@
+                <input type="text" autocomplete="off" class="form-control" id="NewCustomerName" value="" />
+                @*<input type="hidden" name="SaleOrder.CustomerId" id="idnCustomer" value="10" />*@
+                @*@Html.ValidationMessageFor(model => model.Customer.Name, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Customer.Name, new { htmlAttributes = new { @class = "form-control", @name = "Customer.Name", @id = "NewCustomerName"} })*@
+                <input type="text" autocomplete="off" class="form-control" id="NewCustomerAddress" value="" />
+                @*<input type="hidden" name="SaleOrder.CustomerId" id="idnCustomer" value="10" />*@
+                @*@Html.ValidationMessageFor(model => model.Customer.Name, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+
+
+        <div class="table-title">
+            <div class="row">
+                @*<div class="col-sm-8"><h2>Sale <b>Order</b></h2></div>*@
+                <div class="col-sm-8">
+                    @*<button type="submit" id="CreateSO" class="btn btn-info add-new"><i class="fa fa-plus"></i>Save & Print</button>*@
+                    <input type="button" value="Add" id="btnCreateNewCust" class="btn btn-info add-new" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @*}*@
+</div>
+
+@*@section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }*@

@@ -1,0 +1,491 @@
+﻿@model MYBUSINESS.Models.PurchaseOrderViewModel
+
+@{
+    ViewBag.Title = "Update PO";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<link href="@Url.Content("~/Content/custom/downloads/jquery-ui-1.12.1.custom/jquery-ui.min.css")" rel="stylesheet" type="text/css" />
+@*<link href="@Url.Content("~/Content/custom/downloads/jquery-ui.min.css")" rel="stylesheet" type="text/css" />*@
+<script src="~/Content/custom/downloads/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+
+<link href="@Url.Content("~/Content/custom/custom.css")" rel="stylesheet" type="text/css" />
+<script src="~/Content/custom/supplierPOPR.js"></script>
+<script src="~/Content/custom/downloads/jquery.mcautocomplete.js"></script>
+<script src="~/Content/custom/downloads/jquery.scannerdetection.js"></script>
+@*<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">*@
+
+@*@using (Html.BeginForm())*@
+@using (Html.BeginForm(null, null, FormMethod.Post, new { name = "POEdit", id = "POEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="container" id="container">
+        @Html.HiddenFor(model => model.PurchaseOrder.Id)
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-offset-5"><h2>Purchase <b>Order</b></h2></div>
+                    @*<div class="col-sm-4">
+                            <button type="button" id="addNewRow" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button>
+                        </div>*@
+                </div>
+                <input type="hidden" name="PurchaseOrder.PurchaseReturn" id="purchaseReturn" value=@ViewBag.IsReturn />
+                <input type="hidden" name="PurchaseOrder.SupplierId" id="idnSupplier" value="@Model.PurchaseOrder.SupplierId" />
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h5><b>Supplier Name</b></h5>
+                        <input type="text" autocomplete="off" class="form-control" name="Supplier.Name" id="supplier" value="@(ViewBag.SupplierName)">
+                        <font size="1">Or @*<a id="OpenNewSuppForm" href="">*@Add New Supplier@*</a>*@</font>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <h5><b>Address</b></h5>
+                        <input type="text" autocomplete="off" class="form-control" name="Supplier.Address" id="supplierAddress" readonly tabindex="-1" value="@(ViewBag.SupplierAddress)">
+                    </div>
+
+                    @*<input type="text" id="search" />*@
+                </div>
+
+            </div>
+            <table id="selectedProducts" class="table table-bordered">
+                <thead>
+                    <tr>
+                        @*<th>
+                                Hidden
+                            </th>*@
+                        @*<th>
+                                @Html.DisplayNameFor(model => model.Product.Id)
+                            </th>*@
+                        <th style="width:5%;">#</th>
+                        <th style="width:25%;">
+                            @Html.DisplayNameFor(model => model.Product.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Product.PurchasePrice)
+                        </th>
+                        <th>
+                            @*@Html.DisplayNameFor(model => model.PurchaseOrderDetail.Quantity)*@
+                            Quantity
+                        </th>
+                        <th>
+                            Unit
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Product.PerPack)
+                        </th>
+
+                        <th>
+                            Item Total
+                        </th>
+                        <th style="display:none;">
+                            Order Type
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                    @if (Model.PurchaseOrderDetail.Count > 0)
+                    {
+                        int sNo = 0;
+                        foreach (var item in Model.PurchaseOrderDetail)
+                        {
+
+                            <tr>
+                                <td id="SNo0">@(sNo + 1)</td>
+                                <td style="display:none;"><input type="hidden" name="PurchaseOrderDetail.Index" value="@sNo" /></td>
+                                <td style="display:none;"><input type="text" value=@item.ProductId readonly class="form-control classBGcolor" name="PurchaseOrderDetail[@sNo].ProductId" id="idn@(sNo)"></td>
+                                @* below line -- if we dont put "()" then string after space cut's off *@
+                                <td><input type="text" autocomplete="off" value="@(item.Product.Name)" class="form-control" name="name@(sNo)" id="name@(sNo)"></td>
+                                <td><input type="text" autocomplete="off" value=@item.PurchasePrice class="form-control classBGcolor" name="PurchaseOrderDetail[@sNo].PurchasePrice" id="purchasePrice@(sNo)"></td>
+                                <td><input type="text" autocomplete="off" value=@item.Quantity class="form-control" name="PurchaseOrderDetail[@sNo].Quantity" id="quantity@(sNo)"></td>
+                                <td>
+                                    @Html.DropDownList("PurchaseOrderDetail[" + sNo + "].IsPack", new SelectList(ViewBag.UnitTypeOptionList, "Value", "Text", item.IsPack),
+                                        new { @class = "form-control", id = "isPack" + sNo })
+                                </td>
+
+
+
+
+
+
+
+
+                                <td><input type="text" autocomplete="off" readonly value=@(item.PerPack) class="form-control" name="PurchaseOrderDetail[@sNo].PerPack" id="perPack@(sNo)"></td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                @if (item.IsPack == true)
+                                {//Pack
+                                    <td><input type="text" value=@(item.PurchasePrice * item.Quantity * item.PerPack) readonly tabindex="-1" class="form-control classBGcolor" name="itemTotal@(sNo)" id="itemTotal@(sNo)"></td>
+                                }
+                                else
+                                {//Item
+                                    <td><input type="text" value=@(item.PurchasePrice * item.Quantity) readonly tabindex="-1" class="form-control classBGcolor" name="itemTotal@(sNo)" id="itemTotal@(sNo)"></td>
+                                }
+
+
+                                <td style="display:none;">
+                                    @Html.DropDownList("PurchaseOrderDetail[" + sNo + "].SaleType", new SelectList(ViewBag.OptionLst, "Value", "Text", item.SaleType),
+                                        new { @class = "form-control", id = "saleType" + sNo})
+                                </td>
+
+                                <td>
+                                    <button type="button" id="delete@(sNo)" class="delete btn btn-default add-new"> <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a></button>
+                                </td>
+                            </tr>
+
+                            sNo += 1;
+
+
+
+                        }
+
+
+                    }
+
+                </tbody>
+
+            </table>
+
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <button type="button" id="addNewRow" class="btn btn-info add-new"><i class="fa fa-plus"></i> New Row</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:inline" id="dvCalculations">
+                <table id="grandTotal" class="table borderless">
+                    <thead>
+                        <tr>
+                            <th>
+                                @*@Html.DisplayNameFor(model => model.PurchaseOrderDetail.Product.Name)*@
+                            </th>
+                            <th>
+                                @*@Html.DisplayNameFor(model => model.PurchaseOrderDetail.Product.PurchasePrice)*@
+                            </th>
+                            <th style="width:25%;">
+                                @*@Html.DisplayNameFor(model => model.PurchaseOrderDetail.Quantity)*@
+                            </th>
+                            <th style="width:20%;">
+                                @*Item Total*@
+                            </th>
+                            <th>
+
+                            </th>
+
+                            <th>
+                                @*Actions*@
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr id="rOrderTotal">
+                            @*@Html.DisplayNameFor(model => model.PurchaseOrder.Balance.Product.PurchasePrice)*@
+
+                            @*<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a product">*@
+
+                            <td><input type="text" readonly class="form-control classBorder0" name="gt1" id="gt1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="gt2" id="gt2" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="OrderTotal" id="OrderTotal" value="Order Total(@ViewBag.orderQty pack, @ViewBag.orderQtyPiece piece)" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="PurchaseOrder.BillAmount" id="ItemsTotal" value=@(Model.PurchaseOrder.BillAmount) tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="gt5" id="gt5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr id="rReturnTotal">
+                            <td><input type="text" readonly class="form-control classBorder0" name="rgt1" id="rgt1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="rgt2" id="rgt2" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="ReturnTotal" id="ReturnTotal" value="Return Total(@ViewBag.returnQty pack, @ViewBag.returnQtyPiece piece)" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="ReturnItemsTotal" id="ReturnItemsTotal" value=@(Model.PurchaseOrder.PurchaseReturnAmount) tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="rgt5" id="rgt5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr id="rDiscount">
+                            <td><input type="text" readonly class="form-control classBorder0" name="dc1" id="dc1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="dc2" id="dc2" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="dc3" id="dc3" value="Order Discount" tabindex="-1"></td>
+                            <td><input type="text" autocomplete="off" class="form-control" name="PurchaseOrder.Discount" id="discount" value=@(Model.PurchaseOrder.Discount)></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="dc5" id="dc5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" readonly class="form-control classBorder0" name="st1" id="st1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="st2" id="st2" tabindex="-1"></td>
+                            <td><b><input type="text" readonly class="form-control classBorder0" name="st3" id="st3" value="Sub Total" tabindex="-1"></b></td>
+                            <td><b><input type="text" readonly class="form-control classBorder0" name="subtotal" id="subtotal" value=@ViewBag.SubTotal tabindex="-1"></b></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="st5" id="st5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pb1" id="pb1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pb2" id="pb2" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pb3" id="pb3" value="Prev. Balance" tabindex="-1"></td>
+                            <td><input readonly type="text" autocomplete="off" class="form-control" name="PurchaseOrder.PrevBalance" id="PreviousBalance" value=@(Model.PurchaseOrder.PrevBalance) tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pb5" id="pb5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" readonly class="form-control classBorder0" name="tt1" id="tt1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="tt2" id="tt2" tabindex="-1"></td>
+                            <td><b><input type="text" readonly class="form-control classBorder0" name="tt3" id="tt3" value="Total" tabindex="-1"></b></td>
+                            <td><b><input type="text" readonly class="form-control classBorder0" name="total" id="total" value=@ViewBag.Total tabindex="-1"></b></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="tt5" id="tt5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pd1" id="pd1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pd2" id="pd2" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pd3" id="pd3" value="Paid" tabindex="-1"></td>
+                            <td><input type="text" autocomplete="off" class="form-control" name="PurchaseOrder.BillPaid" id="paid" value=@(Model.PurchaseOrder.BillPaid)></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="pd5" id="pd5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" readonly class="form-control classBorder0" name="bl1" id="bl1" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="bl2" id="bl2" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="bl3" id="bl3" value="Balance" tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="PurchaseOrder.Balance" id="balance" value=@(Model.PurchaseOrder.Balance) tabindex="-1"></td>
+                            <td><input type="text" readonly class="form-control classBorder0" name="bl5" id="bl5" tabindex="-1"></td>
+                            <td></td>
+                        </tr>
+
+
+                    </tbody>
+
+                </table>
+
+                <div class="table-title">
+
+                    <div class="row">
+                        @*<div class="col-sm-8"><h2>Purchase <b>Order</b></h2></div>*@
+                        <div class="col-sm-3">
+
+                        </div>
+                        <div class="col-sm-7">
+                            @Html.DropDownList("PurchaseOrder.PaymentMethod", new SelectList(ViewBag.PaymentMethodOptionLst, "Value", "Text", @Model.PurchaseOrder.PaymentMethod),
+                                          new { @class = "form-control", id = "PurchaseOrder.PaymentMethod"})
+
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        @*<div class="col-sm-8"><h2>Purchase <b>Order</b></h2></div>*@
+                        <div class="col-sm-3">
+
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" autocomplete="off" class="form-control" name="PurchaseOrder.PaymentDetail" id="PurchaseOrder.PaymentDetail" value="@Model.PurchaseOrder.PaymentDetail" placeholder="Cheque No./Online payment No./etc..." data-toggle="tooltip" data-placement="top" title="Enter any details you want">
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        @*<div class="col-sm-8"><h2>Purchase <b>Order</b></h2></div>*@
+
+                        <div class="col-sm-3">
+
+                        </div>
+                        <div class="col-sm-7">
+                            <textarea name="PurchaseOrder.Remarks" rows="1" cols="100" class="form-control" placeholder="These remarks will print on bill">@Model.PurchaseOrder.Remarks</textarea>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="row">
+                        @*<div class="col-sm-8"><h2>Purchase <b>Order</b></h2></div>*@
+                        <div class="col-sm-3">
+
+                        </div>
+                        <div class="col-sm-7">
+                            <textarea name="PurchaseOrder.Remarks2" rows="1" cols="100" class="form-control" placeholder="These remarks will not print on bill">@Model.PurchaseOrder.Remarks2</textarea>
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="submit" id="CreatePO" class="btn btn-info add-new">Save</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+
+<script type="text/javascript">
+    //$(document).ready(function () {
+
+
+        //_total = ItemsTotal - discount - ReturnsTotal + prevBal;
+        _total = @(Model.PurchaseOrder.PurchaseOrderAmount - Model.PurchaseOrder.Discount - Model.PurchaseOrder.PurchaseReturnAmount + Model.PurchaseOrder.PrevBalance)
+        //
+        //
+        IsReturn = '@(ViewBag.IsReturn)';
+
+        @if (ViewBag.IsUpdate == false)
+        {
+            @:$("#POEdit :input").prop("disabled", true);
+        }
+
+
+        @foreach (var d in Model.Suppliers)
+        {
+            @*@:products.push(["@d.Name","@d.PurchasePrice","@d.Stock"]);*@
+            @:suppliers.push(["@d.Id", "@d.Name", "@d.Address", "@d.Balance"]);
+
+        }
+
+        @{
+            var carton = 0; //= (d.Stock / d.PerPack);
+            var piece = 0;
+            foreach (var d in Model.Products)
+            {
+                carton = (int)(d.Stock / d.PerPack);
+                piece = (int)(d.Stock % d.PerPack);
+                if (piece == 0)
+                {
+                    @:products.push(["@d.Id", "@d.Name", "@d.PurchasePrice", "@carton", "@d.PerPack"]);
+                }
+                else
+                {
+                    @:products.push(["@d.Id", "@d.Name", "@d.PurchasePrice", "@carton,@piece","@d.PerPack"]);
+                }
+            }
+         }
+
+                OnTypeSupplierName('#supplier');
+
+                var i;
+                var podCount = "@Model.PurchaseOrderDetail.Count()";
+        for (i = 0; i < podCount; i++)
+        {
+
+            txtSerialNum = i;
+            OnTypeName('#name' + i);
+                TriggerBodyEvents();
+            }
+
+        //TriggerFooterEvents();
+        //update_itemTotal();
+
+
+        $('#btnPrintPO').click(function () {
+                //$("#btnPrintPO").attr("disabled", true);
+                //alert("PrintPO");
+                var newUrl = "@Url.Action("Index", "POPR")";
+            //alert(newUrl);
+            $.ajax({
+                url: "@Url.Action("PrintPO", "POPR")",
+                data: { 'POId': "@Model.PurchaseOrder.Id"},
+                type: "GET",
+                cache: false,
+                success: function () {
+                        //alert(data);
+                        //$("#NewData").html(data);
+                        window.location.href = newUrl;
+                    },
+                error: function () {
+                        //$('#lblCommentsNotification').text("Error encountered while saving the comments.");
+                        alert('Data provided was not valid');
+                    }
+                });
+            });
+
+    //});
+</script>
+
+<div id="dialog-CreateSupplier" title="Create supplier dialog">
+    @*@using (Html.BeginForm())*@
+    @*@using (Html.BeginForm("Create", "Suppliers", FormMethod.Post, new { name = "POPRCreateNewSupplier", id = "POPRCreateNewSupplier" }))*@
+    @*{*@
+    @*@Html.AntiForgeryToken()*@
+    @*ViewBag.Controller = "POPR";
+        ViewBag.Action = "Create";
+        TempData["Controller"] = "POPR";
+        TempData["Action"] = "Create";*@
+    @*<input type="hidden" name="SupplierId" value="@ViewBag.Data1" />
+        <input type="hidden" name="SupplierId" value="@ViewBag.Data1" />*@
+    <div class="form-horizontal">
+
+        <h4>Add New Supplier</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Supplier.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Supplier.Id, new { htmlAttributes = new { @class = "form-control", @name = "Supplier.Id", @id ="NewSupplierId", @Value = ViewBag.SuggestedNewSuppId, @readonly = "readonly" } })*@
+                <input type="text" autocomplete="off" class="form-control" id="NewSupplierId" value=@ViewBag.SuggestedNewSuppId readonly="readonly" />
+                @*@Html.ValidationMessageFor(model => model.Supplier.Id, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Supplier.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Supplier.Name, new { htmlAttributes = new { @class = "form-control", @name = "Supplier.Name", @id = "NewSupplierName"} })*@
+                <input type="text" autocomplete="off" class="form-control" id="NewSupplierName" value="" />
+                @*<input type="hidden" name="PurchaseOrder.SupplierId" id="idnSupplier" value="10" />*@
+                @*@Html.ValidationMessageFor(model => model.Supplier.Name, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Supplier.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Supplier.Name, new { htmlAttributes = new { @class = "form-control", @name = "Supplier.Name", @id = "NewSupplierName"} })*@
+                <input type="text" autocomplete="off" class="form-control" id="NewSupplierAddress" value="" />
+                @*<input type="hidden" name="PurchaseOrder.SupplierId" id="idnSupplier" value="10" />*@
+                @*@Html.ValidationMessageFor(model => model.Supplier.Name, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+
+
+        <div class="table-title">
+            <div class="row">
+                @*<div class="col-sm-8"><h2>Purchase <b>Order</b></h2></div>*@
+                <div class="col-sm-8">
+                    @*<button type="submit" id="CreatePO" class="btn btn-info add-new"><i class="fa fa-plus"></i>Save & Print</button>*@
+                    <input type="button" value="Add" id="btnCreateNewSupp" class="btn btn-info add-new" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @*}*@
+</div>
+
+@*@section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }*@

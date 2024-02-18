@@ -1,0 +1,347 @@
+﻿@model IEnumerable<MYBUSINESS.Models.PO>
+
+@{
+    /**/
+
+    /**/
+
+    int TotalPOQty = 0;
+    decimal TotalPOAmout = 0;
+    int TotalPRQty = 0;
+    decimal TotalPRAmout = 0;
+    decimal BillPaid = 0;
+    decimal Discount = 0;
+    decimal Balance = 0;
+    string whtieSpace = ((char)160).ToString() + ((char)160).ToString() + ((char)160).ToString() + ((char)160).ToString();
+    //decimal PrevBalance = 0;
+    Dictionary<int, int> LstMaxSerialNo = ViewBag.LstMaxSerialNo as Dictionary<int, int>;
+    <div id="NewData">
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        @*<div class="box-header">
+                                <h3 class="box-title">Hover Data Table</h3>
+                            </div>*@
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <table class="table table-hover cell-border" id="POPRIndex">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Date)
+                                        </th>
+                                        <th>
+                                            Order No.
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("Supplier")
+                                        </th>
+
+
+                                        <th style="display:none;">
+                                            @Html.DisplayNameFor(model => model.PurchaseOrderQty)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.PurchaseOrderAmount)
+                                        </th>
+                                        <th style="display:none;">
+                                            @Html.DisplayNameFor(model => model.PurchaseReturnQty)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.PurchaseReturnAmount)
+                                        </th>
+                                        @*
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.BillAmount)
+                                            </th>*@
+
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Discount)
+                                        </th>
+                                        <th>
+                                            Prev. Balance
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.BillPaid)
+                                        </th>
+
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Balance)
+                                        </th>
+                                        <th>
+                                            User
+                                        </th>
+                                        <th>
+
+                                        </th>
+                                        @*
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.SaleReturn)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.PODId)
+                                            </th>*@
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Date)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.POSerial)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Supplier.Name)
+                                            </td>
+
+
+                                            <td style="display:none;">
+                                                @Html.DisplayFor(modelItem => item.PurchaseOrderQty)
+                                                @{ TotalPOQty += (int)item.PurchaseOrderQty;}
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PurchaseOrderAmount)
+                                                @{TotalPOAmout += (decimal)item.PurchaseOrderAmount;}
+                                            </td>
+                                            <td style="display:none;">
+                                                @Html.DisplayFor(modelItem => item.PurchaseReturnQty)
+                                                @{TotalPRQty += (int)item.PurchaseReturnQty;}
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PurchaseReturnAmount)
+                                                @{TotalPRAmout += (decimal)item.PurchaseReturnAmount;}
+                                            </td>
+
+                                            @*
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.BillAmount)
+                                                </td>*@
+
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Discount)
+                                                @{Discount += (decimal)item.Discount;}
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PrevBalance)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.BillPaid)
+                                                @{BillPaid += item.BillPaid;}
+
+                                            </td>
+
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Balance)
+                                            </td>
+
+                                            @*
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.SaleReturn)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.PODId)
+                                                </td>*@
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Employee.Login)
+                                            </td>
+                                            <td>
+                                                @*@Html.ActionLink("View", "Edit", new { id = item.Id }) |*@
+
+                                                @{
+
+                                                    if (LstMaxSerialNo != null && LstMaxSerialNo.ContainsValue((int)item.POSerial))
+                                                    {
+                                                        @Html.ActionLink("Update", "Edit", new { id = item.Id, update = true })
+                                                    }
+                                                    else
+                                                    {
+
+                                                        @Html.ActionLink(whtieSpace + "View", "Edit", new { id = item.Id, update = false })
+                                                    }
+
+                                                }
+                                                |
+
+                                                @Html.ActionLink("Print", "PrintSO3", new { id = item.Id })
+                                                @*|
+                                                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
+                                            </td>
+                                        </tr>
+                                        //Balance = TotalPOAmout - TotalPRAmout - BillPaid - Discount- PrevBalance;
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr style="font-weight:bold">
+                                        <td></td>
+                                        <td>@Model.Count()</td>
+                                        <td></td>
+                                        <td style="display:none;">@TotalPOQty</td>
+                                        <td>@TotalPOAmout</td>
+                                        <td style="display:none;">@TotalPRQty</td>
+                                        <td>@TotalPRAmout</td>
+
+                                        <td>@Discount</td>
+                                        <td>@*@PrevBalance*@</td>
+                                        <td>@BillPaid</td>
+
+                                        <td>@*@ViewBag.TotalBalance*@</td>
+
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        //$('#POSRIndex').DataTable({
+        //    fixedHeader: {
+        //        footer: true
+        //    }
+        //});
+        $('#POPRIndex').DataTable({
+            //fixedHeader: {
+            //    header: true,
+            //    footer: true
+            //},
+            "scrollY": "400px",
+            "scrollCollapse": true,
+            "paging": false,
+            "bInfo": false,
+            "order": [[1, "desc"]],
+            "searching": true,
+
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api(), data;
+
+                // Remove the formatting to get integer data for summation
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+                
+                pageTotal = api
+                    .column(1, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        a += 1;
+                        //alert(a);
+                        return intVal(a);
+                    }, 0);
+                $(api.column(1).footer()).html(pageTotal);
+
+
+                
+                pageTotal = api
+                    .column(3, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $(api.column(3).footer()).html(pageTotal);
+
+                pageTotal = api
+                    .column(4, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $(api.column(4).footer()).html(pageTotal);
+
+                
+                pageTotal = api
+                    .column(5, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $(api.column(5).footer()).html(pageTotal);
+
+                
+                pageTotal = api
+                    .column(6, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $(api.column(6).footer()).html(pageTotal);
+
+                
+                pageTotal = api
+                    .column(7, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $(api.column(7).footer()).html(pageTotal);
+
+                
+                //pageTotal = api
+                //    .column(8, { page: 'current' })
+                //    .data()
+                //    .reduce(function (a, b) {
+                //        return intVal(a) + intVal(b);
+                //    }, 0);
+                //$(api.column(8).footer()).html(pageTotal);
+
+                pageTotal = api
+                    .column(9, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $(api.column(9).footer()).html(pageTotal);
+
+
+
+                
+                //pageTotal = api
+                //    .column(10, { page: 'current' })
+                //    .data()
+                //    .reduce(function (a, b) {
+                //        return intVal(a) + intVal(b);
+                //    }, 0);
+                //$(api.column(10).footer()).html(pageTotal);
+
+                
+                //pageTotal = api
+                //    .column(11, { page: 'current' })
+                //    .data()
+                //    .reduce(function (a, b) {
+                //        return intVal(a) + intVal(b);
+                //    }, 0);
+                //$(api.column(11).footer()).html(pageTotal);
+
+                
+                //pageTotal = api
+                //    .column(12, { page: 'current' })
+                //    .data()
+                //    .reduce(function (a, b) {
+                //        return intVal(a) + intVal(b);
+                //    }, 0);
+                //$(api.column(12).footer()).html(pageTotal);
+            }
+
+        });
+
+
+    });
+
+</script>

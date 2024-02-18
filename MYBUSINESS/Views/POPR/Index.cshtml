@@ -1,0 +1,160 @@
+﻿@model IEnumerable<MYBUSINESS.Models.PO>
+
+@{
+    ViewBag.Title = "Purchase Orders";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+@* for modal *@
+
+
+<link href="@Url.Content("~/Content/custom/downloads/jquery-ui-1.12.1.custom/jquery-ui.min.css")" rel="stylesheet" type="text/css" />
+@*<link href="@Url.Content("~/Content/custom/downloads/jquery-ui.min.css")" rel="stylesheet" type="text/css" />*@
+<script src="~/Content/custom/downloads/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+
+
+@*<link href="@Url.Content("~/Content/custom/custom.css")" rel="stylesheet" type="text/css" />*@
+<script src="~/Content/custom/supplierPOPR.js"></script>
+
+<link href="~/Content/custom/downloads/datatables.min.css" rel="stylesheet" />
+<script src="~/Content/custom/downloads/datatables.min.js"></script>
+<script src="~/Content/custom/downloads/jquery.mcautocomplete.js"></script>
+<center><h2>Purchases</h2></center>
+
+@*<h1>@ViewBag.myLog</h1>*@
+
+
+
+@*<p>
+        @Html.ActionLink("Create New Purchase Order", "Create")
+    </p>*@
+<div class="col-sm-1">
+    @*<button type="submit" id="CreatePO" class="btn btn-info add-new"><i class="fa fa-plus"></i>Save & Print</button>*@
+    <a href="/POPR/Create?IsReturn=false" id="createPOPR" class="btn btn-info "><i class=""></i> New Purchase</a>
+</div>
+<form name="registration_form_Product" id='registration_form_Product' class="form-inline">
+    <center>
+        <div class="row">
+            <input type="hidden" name="PurchaseOrder.SupplierId" id="idnSupplier" value="" />
+            @*@Html.Label("Supplier Name", htmlAttributes: new { @class = "control-label col-md-2" })*@
+
+            @*@Html.Editor("suppName", new { htmlAttributes = new { @class = "form-control", @placeholder = "Search by supplier" } })*@
+            <input type="text" autocomplete="off" class="form-control" name="SupplierName" id="supplier" value="" placeholder="Search by supplier" data-toggle="tooltip" data-placement="top" title="Search by supplier">
+
+            @*@Html.Label("Time", htmlAttributes: new { @class = "control-label col-md-2" })*@
+
+            @Html.Editor("startDate", new { htmlAttributes = new { @class = "form-control datepicker", @id = "datepickerStart", @placeholder = "Start date", @Value = ViewBag.StartDate } })
+
+
+            @*@Html.Label("Time", htmlAttributes: new { @class = "control-label col-md-2" })*@
+
+            @Html.Editor("endDate", new { htmlAttributes = new { @class = "form-control datepicker", @id = "datepickerEnd", @placeholder = "End date", @Value = ViewBag.EndDate } })
+
+            <input type="button" value="Go" id="btnSearch" class="btn btn-info add-new" />
+
+            @*<input type="date" value="Search" id="btnSearch1" class="form-control " />*@
+
+        </div>
+    </center>
+</form>
+
+@{Html.RenderPartial("_SelectedPOPR", Model); }
+
+
+<script type="text/javascript">
+        @foreach(var d in ViewBag.Suppliers)
+        {
+            @*@: products.push(["@d.Name", "@d.PurchasePrice", "@d.Stock"]);*@
+            @: suppliers.push(["@d.Id", "@d.Name", "@d.Address", "@d.Balance"]);
+        }
+
+        OnTypeSupplierName('#supplier');
+        $(function () { // will trigger when the document is ready
+            //var date = $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' }).val();
+            $('.datepicker').datepicker({
+                dateFormat: 'dd-M-yy',
+                showOn: "both"//,
+                //buttonImageOnly: true,
+                //buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+
+                //buttonText: "Select date"
+            });
+
+        });
+
+        $(document).ready(function () {
+
+            $('tr td.SupplierNameForSearch').click(function () {
+                //alert($(this).text());
+                //$('#idnSupplier').val();
+                $('#supplier').val($(this).text().trim());
+                $('#idnSupplier').val($(this).closest("tr").find(".SupplierIdForSearch").text());
+                SearchThis();
+            });
+
+            $('#btnSearch').click(function () {
+                SearchThis();
+            });
+
+            function SearchThis() {
+                //alert("yes");
+                var suppId = $('#idnSupplier').val();
+
+                if ($('#supplier').val().trim() != "" && $('#idnSupplier').val() == "") {
+                    alert('Supplier not found. Please select supplier from list');
+                    return false;
+
+                }
+
+
+                //var startDate = $('#startDate').val();
+                //var endDate = $('#endDate').val();
+
+                var startDate = $('#datepickerStart').datepicker({ dateFormat: 'dd-mm-yy' }).val();
+                var endDate = $('#datepickerEnd').datepicker({ dateFormat: 'dd-mm-yy' }).val();
+
+                //if (startDate.trim() == "" && Date.parse(startDate)) {
+                //    //Valid date
+                //} else {
+                //    alert("Start date is not valid");
+                //    return false;
+                //}
+
+                //if (Date.parse(startDate)) {
+                //    //Valid date
+                //} else {
+                //    alert("End date is not valid");
+                //    return false;
+                //}
+
+                //$('#loading-image').show();
+                $.ajax({
+                    url: "@Url.Action("SearchData","POPR")",
+                    data: { 'suppId': suppId, 'startDate': startDate, 'endDate': endDate },
+                    type: "GET",
+                    cache: false,
+                    success: function (data) {
+                        //alert(data);
+                        $("#NewData").html(data);
+
+                        //$("#hdnOrigComments").val($('#txtComments').val());
+                        //$('#lblCommentsNotification').text(savingStatus);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        //$('#lblCommentsNotification').text("Error encountered while saving the comments.");
+                        alert('Data provided was not valid');
+                    }
+                });
+            }
+
+            //$('#btnSearch').click(function () {
+
+
+            //});
+
+
+        });
+
+
+</script>

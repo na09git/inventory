@@ -1,0 +1,157 @@
+﻿@model IEnumerable<MYBUSINESS.Models.SO>
+
+@{
+    ViewBag.Title = "Customer Wise Sale";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@* for modal *@
+
+<link href="@Url.Content("~/Content/custom/downloads/jquery-ui-1.12.1.custom/jquery-ui.min.css")" rel="stylesheet" type="text/css" />
+@*<link href="@Url.Content("~/Content/custom/downloads/jquery-ui.min.css")" rel="stylesheet" type="text/css" />*@
+<script src="~/Content/custom/downloads/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+
+@*<link href="@Url.Content("~/Content/custom/custom.css")" rel="stylesheet" type="text/css" />*@
+<script src="~/Content/custom/customerSOSR.js"></script>
+<script src="~/Content/custom/downloads/jquery.mcautocomplete.js"></script>
+@*<link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>*@
+<link href="~/Content/custom/downloads/datatables.min.css" rel="stylesheet" />
+<script src="~/Content/custom/downloads/datatables.min.js"></script>
+
+<center><h2>Customer Wise Sale</h2></center>
+<center><h4>@ViewBag.CustName</h4></center>
+<input type="hidden" name="supplierId" id="supplierId" value="@ViewBag.SupplierId" />
+@*<h1>@ViewBag.myLog</h1>*@
+
+
+
+@*<p>
+        @Html.ActionLink("Create New Sale Order", "Create")
+    </p>*@
+
+<form name="registration_form_Product" id='registration_form_Product' class="form-inline">
+    <center>
+        <div class="row">
+            <input type="hidden" name="SaleOrder.CustomerId" id="idnCustomer" value="@ViewBag.CustomerId" />
+            @*@Html.Label("Customer Name", htmlAttributes: new { @class = "control-label col-md-2" })*@
+
+            @*@Html.Editor("custName", new { htmlAttributes = new { @class = "form-control", @placeholder = "Search by customer" } })*@
+
+            @*<input type="text" autocomplete="off" class="form-control" name="Customer.Name" id="customer" value="" placeholder="Search by customer" data-toggle="tooltip" data-placement="top" title="Search by customer">*@
+            <input type="hidden" autocomplete="off" class="form-control" name="Customer.Name" id="customer" value="" placeholder="Search by customer" data-toggle="tooltip" data-placement="top" title="Search by customer">
+
+            @*@Html.Label("Time", htmlAttributes: new { @class = "control-label col-md-2" })*@
+
+            @Html.Editor("startDate", new { htmlAttributes = new { @class = "form-control datepicker", @id = "datepickerStart", @placeholder = "Start date", @Value = ViewBag.StartDate } })
+
+
+            @*@Html.Label("Time", htmlAttributes: new { @class = "control-label col-md-2" })*@
+
+            @Html.Editor("endDate", new { htmlAttributes = new { @class = "form-control datepicker", @id = "datepickerEnd", @placeholder = "End date", @Value = ViewBag.EndDate } })
+
+            <input type="button" value="Go" id="btnSearch" class="btn btn-info add-new" />
+
+            @*<input type="date" value="Search" id="btnSearch1" class="form-control " />*@
+
+        </div>
+    </center>
+</form>
+
+@{Html.RenderPartial("_CustomerWiseSale", Model); }
+
+
+<script type="text/javascript">
+     @foreach (var d in ViewBag.Customers)
+    {
+        @*@:products.push(["@d.Name","@d.SalePrice","@d.Stock"]);*@
+        @:customers.push(["@d.Id","@d.Name", "@d.Address", "@d.Balance"]);
+    }
+
+    OnTypeCustomerName('#customer');
+    $(function () { // will trigger when the document is ready
+        //var date = $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' }).val();
+        $('.datepicker').datepicker({
+            dateFormat: 'dd-M-yy',
+            showOn: "both"//,
+            //buttonImageOnly: true,
+            //buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+
+            //buttonText: "Select date"
+        });
+
+    });
+
+    $(document).ready(function () {
+        $('tr td.CustomerNameForSearch').click(function () {
+            //alert($(this).text());
+            //$('#idnCustomer').val();
+            $('#customer').val($(this).text().trim());
+            $('#idnCustomer').val($(this).closest("tr").find(".CustomerIdForSearch").text());
+            SearchThis();
+        });
+
+        $('#btnSearch').click(function () {
+            SearchThis();
+        });
+
+        function SearchThis() {
+            //alert($('#idnCustomer').val());
+            var custId = $('#idnCustomer').val();
+            var suppId = $('#supplierId').val();
+            if ($('#customer').val().trim() != "" && $('#idnCustomer').val() == "") {
+                alert('Customer not found. Please select customer from list');
+                return false;
+
+            }
+
+
+            //var startDate = $('#startDate').val();
+            //var endDate = $('#endDate').val();
+
+            var startDate = $('#datepickerStart').datepicker({ dateFormat: 'dd-mm-yy' }).val();
+            var endDate = $('#datepickerEnd').datepicker({ dateFormat: 'dd-mm-yy' }).val();
+
+            //if (startDate.trim() == "" && Date.parse(startDate)) {
+            //    //Valid date
+            //} else {
+            //    alert("Start date is not valid");
+            //    return false;
+            //}
+
+            //if (Date.parse(startDate)) {
+            //    //Valid date
+            //} else {
+            //    alert("End date is not valid");
+            //    return false;
+            //}
+
+            //$('#loading-image').show();
+            $.ajax({
+                url: "@Url.Action("FilterCustomerWiseSale", "SOSR")",
+                data: { 'custId': custId, 'suppId': suppId, 'startDate': startDate, 'endDate': endDate },
+                type: "GET",
+                cache: false,
+                success: function (data) {
+                    //alert(data);
+                    $("#NewData").html(data);
+
+                    //$("#hdnOrigComments").val($('#txtComments').val());
+                    //$('#lblCommentsNotification').text(savingStatus);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //$('#lblCommentsNotification').text("Error encountered while saving the comments.");
+                    alert('Data provided was not valid');
+                }
+            });
+        }
+
+        //$('#btnSearch').click(function () {
+
+
+        //});
+
+    });
+
+
+</script>
